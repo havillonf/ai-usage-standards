@@ -1,0 +1,81 @@
+---
+title: Memória persistente
+description: Tipos de memória de agentes, como mantê-la útil e o que nunca guardar nela.
+---
+
+Cada sessão de um agente começa com o contexto **vazio**. "Memória" é tudo o que leva conhecimento de uma sessão para a próxima.
+
+## Tipos de memória
+
+| Tipo | Quem escreve | Onde fica | Compartilhada? | Exemplo |
+|---|---|---|---|---|
+| **Instruções de projeto** | Você e o time | `AGENTS.md`, versionado no repositório | Sim, via git | Comandos de teste, convenções |
+| **Instruções pessoais** | Você | Arquivo global da ferramenta, na sua máquina | Não | "Prefiro respostas curtas", atalhos seus |
+| **Memória automática** | O agente | Diretório da ferramenta, na sua máquina | Não | Correções que você deu, preferências observadas |
+| **Notas de trabalho** | O agente, a seu pedido | Arquivo no projeto (`PROGRESS.md`, `SPEC.md`) | Se versionado | Estado de uma tarefa longa, decisões tomadas |
+
+A regra prática:
+
+- **o que vale para o time** vai para o `AGENTS.md`;
+- **o que vale só para você** fica nas instruções pessoais;
+- **o estado de uma tarefa** vai para notas de trabalho, que podem ser apagadas ao final.
+
+## Higiene
+
+Memória desatualizada é pior que memória nenhuma: o agente segue com confiança uma instrução que já não vale.
+
+- **Revise periodicamente** o que está salvo, inclusive o que o agente escreveu sozinho.
+- **Pode o que o código já diz.** Se o agente consegue descobrir lendo o repositório, não precisa estar na memória.
+- **Não duplique.** A mesma regra em três arquivos vai, cedo ou tarde, divergir.
+- **Apague o que estiver errado** assim que perceber.
+
+## O que nunca vai para a memória
+
+<Regra id="R2" />
+
+Memórias são arquivos de texto em disco, carregados em toda sessão e às vezes sincronizados ou versionados. **Nunca** guarde nelas:
+
+- senhas, tokens, chaves de API, strings de conexão;
+- dados pessoais de terceiros;
+- dados confidenciais de projetos ou parceiros;
+- endereços e detalhes de acesso a ambientes de produção que não deveriam circular.
+
+Se o agente salvar algo assim por conta própria, apague e **troque a credencial**, porque ela pode ter sido exposta.
+
+## Em cada ferramenta
+
+<NaPratica>
+<TabItem value="opencode">
+
+- **Instruções pessoais:** `~/.config/opencode/AGENTS.md`.
+- **Instruções de projeto:** `AGENTS.md` do repositório.
+- **Notas de tarefa:** o agente **plan** grava planos em `.opencode/plans/`.
+
+</TabItem>
+<TabItem value="cline">
+
+- **Instruções pessoais:** regras globais em `~/Documents/Cline/Rules` ou `~/.agents/AGENTS.md`.
+- **Memory bank:** um padrão difundido na comunidade do Cline. É um conjunto de arquivos Markdown no projeto (contexto, progresso, decisões) que o agente lê e atualiza a cada tarefa, seguindo uma regra. Revise esses arquivos como qualquer outro.
+
+</TabItem>
+<TabItem value="claude-code">
+
+- **Instruções pessoais:** `~/.claude/CLAUDE.md`. Para preferências pessoais só deste projeto, `CLAUDE.local.md` (fora do git).
+- **Memória automática:** o Claude Code anota sozinho as correções e preferências por repositório e carrega no início de cada sessão o começo do arquivo de memória. É possível revisar, editar ou desativar essas notas.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Instruções pessoais:** regras globais em `~/.gemini/AGENTS.md` ou `~/.gemini/config/rules/*.md`.
+- **Instruções de projeto:** `AGENTS.md` e `.agents/rules/` no workspace.
+
+</TabItem>
+</NaPratica>
+
+## Fontes
+
+- Anthropic — [How Claude remembers your project](https://code.claude.com/docs/en/memory).
+- Anthropic — [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents): *structured note-taking*.
+- OpenCode — [Rules](https://opencode.ai/docs/rules/) e [Agents](https://opencode.ai/docs/agents/).
+- Cline — [Cline Rules](https://docs.cline.bot/customization/cline-rules).
+- Antigravity — [Rules](https://antigravity.google/docs/rules).

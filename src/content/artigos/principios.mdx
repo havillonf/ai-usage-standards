@@ -1,0 +1,66 @@
+---
+title: Princípios do ATLab
+description: Os cinco princípios que orientam o uso de agentes de IA no laboratório.
+---
+
+Ferramentas e modelos mudam a cada poucos meses. Os princípios abaixo não mudam, e todas as recomendações do guia derivam deles.
+
+## 1. Quem submete é responsável
+
+O agente é uma ferramenta, e a autoria responsável é sempre de uma pessoa. Se você abre o PR, o código é seu, tenha sido digitado por você ou gerado por um agente. "Foi a IA que escreveu" não é justificativa para um bug, uma falha de segurança ou uma licença violada.
+
+<Regra id="R1" />
+
+Na prática:
+
+- **Leia o diff inteiro antes de submeter.** Se você não consegue explicar uma mudança para quem vai revisar, ela não está pronta.
+- **Desconfie do que parece pronto.** Agentes produzem código plausível que nem sempre trata os casos de borda.
+- **Peça explicações ao agente** sobre trechos que você não entendeu, antes de aceitá-los.
+
+## 2. Verificação acima de confiança
+
+Um agente para quando o trabalho *parece* pronto. Sem uma checagem que ele mesmo possa rodar, "parece pronto" é o único sinal disponível, e você vira o verificador manual de cada erro.
+
+- **Dê ao agente um critério objetivo**: testes, build, linter, um script que compara a saída com um resultado esperado.
+- **Peça evidência, não afirmação**: a saída dos testes, o comando executado e seu resultado.
+- **Se você não consegue verificar, não entregue.**
+
+<Regra id="R6" />
+
+Detalhes em [Fluxo de trabalho](/aprofundar/ciclo-de-trabalho#verificar).
+
+## 3. Menor privilégio
+
+Um agente pode ler arquivos, rodar comandos e acessar a rede **com as suas permissões**. Por isso ele começa com o mínimo e ganha acesso conforme a necessidade:
+
+- aprovação manual para comandos e edições, até você conhecer o comportamento da ferramenta naquele projeto;
+- listas de permissões para comandos seguros e repetitivos (rodar testes, lint);
+- autonomia total só em ambiente isolado.
+
+<Regra id="R3" />
+
+Detalhes em [Permissões e auto-aprovação](/aprofundar/permissoes).
+
+## 4. Transparência
+
+O uso de agentes não é motivo de vergonha nem de segredo. Declarar o uso:
+
+- ajuda quem revisa a calibrar a atenção;
+- permite ao laboratório aprender o que funciona;
+- mantém a rastreabilidade das decisões.
+
+Por isso a regra R6 exige declarar o uso de agente no PR ou no commit, por exemplo com uma linha `Co-Authored-By` ou com uma nota na descrição do PR.
+
+## 5. Aprender, e não só delegar
+
+Um agente pode acelerar o aprendizado ou substituí-lo. A diferença está em como você o usa:
+
+- **Para aprender:** peça explicações, compare alternativas, peça que o agente revise o *seu* código, explore um codebase novo fazendo perguntas.
+- **Para entregar:** delegue o que você já domina e consegue verificar.
+
+Se você está aprendendo uma tecnologia, escreva primeiro e use o agente como revisor. Quem só delega não desenvolve o julgamento necessário para revisar o que o agente produz, e o [princípio 1](#1-quem-submete-é-responsável) depende desse julgamento.
+
+## Fontes
+
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): verificação, *trust-then-verify gap*.
+- Anthropic — [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) (dez. 2024): simplicidade e transparência.

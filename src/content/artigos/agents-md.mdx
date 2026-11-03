@@ -1,0 +1,166 @@
+---
+title: AGENTS.md
+description: O padrão do ATLab para instruções de projeto destinadas a agentes de IA.
+---
+
+## O que é
+
+O [`AGENTS.md`](https://agents.md/) é um arquivo Markdown na raiz do repositório que funciona como um **README para agentes**. Ele reúne o que um agente precisa saber para trabalhar no projeto e não consegue deduzir sozinho lendo o código.
+
+- **É um padrão aberto**, mantido pela [Agentic AI Foundation](https://agents.md/), ligada à Linux Foundation.
+- **É lido por dezenas de ferramentas**, entre elas todas as ferramentas de referência deste guia (veja [Em cada ferramenta](#em-cada-ferramenta)).
+- **Não tem formato obrigatório**: é Markdown comum, com os títulos que fizerem sentido.
+
+<Regra id="R7" />
+
+O `AGENTS.md` é o padrão do laboratório. Arquivos específicos de ferramenta (`CLAUDE.md`, `GEMINI.md`, `.clinerules/`) **NÃO DEVERIAM** duplicar o conteúdo: eles devem apontar para o `AGENTS.md` ou ser usados só para o que é exclusivo daquela ferramenta.
+
+## O que colocar
+
+Pense no que você explicaria a um colega competente no primeiro dia de projeto:
+
+| ✅ Inclua | ❌ Não inclua |
+|---|---|
+| Comandos de build, teste e lint que o agente não adivinharia | O que o agente descobre lendo o código |
+| Convenções de código que **diferem** do padrão da linguagem | Convenções-padrão que qualquer modelo já conhece |
+| Como rodar **um** teste específico e qual runner usar | Documentação detalhada de API (coloque o link) |
+| Etiqueta do repositório: nomes de branch, formato de PR e de commit | Informação que muda com frequência |
+| Decisões de arquitetura próprias do projeto | Explicações longas ou tutoriais |
+| Peculiaridades do ambiente (variáveis exigidas, serviços locais) | Descrição arquivo por arquivo do codebase |
+| Armadilhas conhecidas e comportamentos não óbvios | Obviedades como "escreva código limpo" |
+| Onde **não** mexer (código gerado, migrações aplicadas) | **Segredos, tokens, senhas, dados pessoais** (regra [R2](/regras)) |
+
+## Como escrever
+
+**Seja concreto e verificável.** Instruções em texto são *contexto*, não configuração obrigatória: o modelo segue melhor o que é específico.
+
+- ✅ "Use indentação de 2 espaços". ❌ "Formate o código corretamente".
+- ✅ "Rode `npm test` antes de commitar". ❌ "Teste suas mudanças".
+- ✅ "Handlers da API ficam em `src/api/handlers/`". ❌ "Mantenha os arquivos organizados".
+
+**Seja curto.** O arquivo é carregado em **toda** sessão e consome contexto sempre. Uma boa meta é ficar **abaixo de ~200 linhas**. Para cada linha, pergunte: *"Se eu apagar isto, o agente vai errar?"* Se a resposta for não, apague.
+
+**Organize.** Use títulos e listas. Instruções contraditórias fazem o modelo escolher uma ao acaso, então revise o arquivo periodicamente.
+
+**Use ênfase com moderação.** Um "IMPORTANTE" numa linha que o agente ignora ajuda. Se muitas linhas forem "importantes", nenhuma se destaca.
+
+**Trate como código:**
+
+- versione no git;
+- revise quando o agente errar;
+- pode regularmente;
+- confira se uma mudança de fato altera o comportamento do agente.
+
+:::tip[Quando acrescentar algo]
+Acrescente uma instrução quando:
+- o agente cometer o **mesmo erro duas vezes**;
+- uma revisão de código pegar algo que o agente deveria saber;
+- você digitar a mesma correção que já digitou na sessão anterior;
+- um colega novo precisaria da mesma informação.
+
+Procedimentos de várias etapas, ou conhecimento que só importa em parte do código, ficam melhor numa **skill** ou numa **regra com escopo por caminho**. Veja [Quando usar o quê](/aprofundar/quando-usar-o-que).
+:::
+
+:::warning[Instruções sugerem, não garantem]
+O agente pode ignorar uma instrução em texto. O que **precisa** acontecer, ou **nunca** pode acontecer, deve ser garantido pela ferramenta: regras de permissão, hooks, CI. Veja [Permissões](/aprofundar/permissoes).
+:::
+
+## Exemplo
+
+```markdown title="AGENTS.md"
+# Projeto: API de agendamento
+
+## Comandos
+- Instalar: `uv sync`
+- Testes: `uv run pytest -q` (um arquivo: `uv run pytest tests/test_x.py -q`)
+- Lint/format: `uv run ruff check --fix && uv run ruff format`
+
+## Convenções
+- Python 3.12, tipagem obrigatória em funções públicas.
+- Datas sempre em UTC (`datetime.now(tz=UTC)`); converter só na borda da API.
+- Erros de domínio herdam de `app.errors.DomainError`.
+
+## Arquitetura
+- `app/api/` só valida e delega; regras de negócio ficam em `app/services/`.
+- Acesso a banco somente via repositórios em `app/repositories/`.
+
+## Não mexer
+- `migrations/versions/` já aplicadas: crie uma nova migração.
+- `app/generated/` é gerado por `make codegen`.
+
+## Git
+- Branches: `feat/…`, `fix/…`. Commits no padrão Conventional Commits.
+- Declare uso de agente no commit (`Co-Authored-By`).
+```
+
+## Monorepos e subdiretórios
+
+Coloque um `AGENTS.md` em cada subprojeto que tenha convenções próprias. O agente lê o arquivo **mais próximo** do código que está editando, e o mais específico prevalece. Instruções dadas diretamente no chat têm prioridade sobre o arquivo.
+
+```text
+repo/
+├── AGENTS.md              ← regras gerais do repositório
+├── services/api/AGENTS.md ← convenções da API
+└── web/AGENTS.md          ← convenções do front-end
+```
+
+## Em cada ferramenta
+
+<NaPratica>
+<TabItem value="opencode">
+
+- **Arquivos lidos:** `AGENTS.md` do projeto (procurado subindo a partir do diretório atual) e `~/.config/opencode/AGENTS.md` (global).
+- **Precedência:** se existirem `AGENTS.md` e `CLAUDE.md`, só o `AGENTS.md` é usado.
+- **Gerar ou melhorar:** `/init` analisa o repositório e cria ou atualiza o `AGENTS.md`.
+- **Arquivos extras:** use o campo `instructions` do `opencode.json` (caminhos, globs ou URLs):
+
+```json title="opencode.json"
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["CONTRIBUTING.md", "packages/*/AGENTS.md"]
+}
+```
+
+</TabItem>
+<TabItem value="cline">
+
+- **Arquivos lidos:** o Cline detecta o `AGENTS.md` e as regras de workspace em `.clinerules/` (ou `.cline/rules/`). Tudo aparece no painel de regras (ícone de balança), com uma chave liga/desliga para cada regra.
+- **Regras globais:** `~/Documents/Cline/Rules` e `~/.agents/AGENTS.md`.
+- **Escopo por caminho:** use frontmatter `paths:` com globs nas regras de `.clinerules/` para ativá-las só em certos arquivos.
+- **Sugestão:** mantenha o conteúdo comum no `AGENTS.md` e use `.clinerules/` só para o que for exclusivo do Cline.
+
+</TabItem>
+<TabItem value="claude-code">
+
+- **Leitura direta:** versões recentes leem o `AGENTS.md` **quando não há `CLAUDE.md`** no projeto.
+- **Se você também quer um `CLAUDE.md`:** importe o `AGENTS.md` nele, para não duplicar conteúdo:
+
+```markdown title="CLAUDE.md"
+@AGENTS.md
+
+## Específico do Claude Code
+- Use plan mode para mudanças em `app/services/`.
+```
+
+- **Verificar o que foi carregado:** `/context`.
+- **Preferências pessoais:** use `CLAUDE.local.md` (fora do git). Atenção: a presença dele faz o Claude Code deixar de ler o `AGENTS.md` por padrão. Nesse caso, use o import acima.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Arquivos lidos:** `AGENTS.md` (ou `GEMINI.md`) na raiz e em subdiretórios, além de `.agents/rules/*.md`. Global: `~/.gemini/AGENTS.md`.
+- **Comportamento:** as regras são cumulativas, e a mais específica vence em caso de conflito. O `AGENTS.md` não usa frontmatter e vale sempre dentro do seu diretório.
+- **Limites:** cada arquivo é truncado acima de ~24 KB. As regras sempre ativas compartilham um orçamento de ~20 mil tokens.
+- **Escopo por caminho:** use `trigger: glob` nas regras de `.agents/rules/`.
+
+</TabItem>
+</NaPratica>
+
+## Fontes
+
+- [agents.md](https://agents.md/): especificação, FAQ e lista de ferramentas compatíveis.
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Write an effective CLAUDE.md*.
+- Anthropic — [How Claude remembers your project](https://code.claude.com/docs/en/memory): seção AGENTS.md.
+- OpenCode — [Rules](https://opencode.ai/docs/rules/).
+- Cline — [Cline Rules](https://docs.cline.bot/customization/cline-rules).
+- Antigravity — [Rules](https://antigravity.google/docs/rules).

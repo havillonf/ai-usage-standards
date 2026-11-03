@@ -1,0 +1,87 @@
+---
+title: Sobre o guia
+description: Propósito, público e como o guia de agentes de IA do ATLab está organizado.
+---
+
+Este guia reúne as práticas que o **Laboratório Alan Turing (ATLab/UFC)** adota para desenvolver com **agentes de IA**: ferramentas que leem o código, executam comandos e fazem alterações em nome de quem as usa. Ele cobre o fluxo de trabalho, as instruções de projeto e a memória, as skills, os servidores MCP, a segurança e a revisão.
+
+## Para quem é
+
+Para qualquer pessoa do laboratório que desenvolve software, analisa dados, desenha arquitetura, escreve testes ou mantém infraestrutura com a ajuda de um agente.
+
+## Independente de ferramenta e de modelo
+
+O guia não depende de um agente nem de um LLM específicos. Ele se apoia em três **padrões abertos**:
+
+| Padrão | Para quê |
+|---|---|
+| [AGENTS.md](https://agents.md/) | Instruções de projeto num arquivo que qualquer agente lê. |
+| [Agent Skills](https://agentskills.io/) | Pacotes de conhecimento e scripts carregados sob demanda. |
+| [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) | Conectar agentes a ferramentas e fontes de dados. |
+
+Os exemplos práticos cobrem as ferramentas de referência do laboratório. Nos artigos, eles aparecem em blocos **Na prática**, com uma aba por ferramenta; a aba escolhida vale para os outros blocos enquanto você navega:
+
+<NaPratica>
+<TabItem value="opencode">
+
+[OpenCode](https://opencode.ai/): agente de terminal, open source, compatível com vários provedores de modelo.
+
+</TabItem>
+<TabItem value="cline">
+
+[Cline](https://cline.bot/): extensão de IDE (e CLI), open source, compatível com vários provedores de modelo.
+
+</TabItem>
+<TabItem value="claude-code">
+
+[Claude Code](https://code.claude.com/docs/): agente da Anthropic para terminal, IDE, desktop e web. É a origem de boa parte das práticas citadas neste guia.
+
+</TabItem>
+<TabItem value="antigravity">
+
+[Antigravity](https://antigravity.google/): ambiente de desenvolvimento com agentes do Google (IDE, app e CLI).
+
+</TabItem>
+</NaPratica>
+
+Muitas práticas vêm da documentação e do blog de engenharia da Anthropic, que criou boa parte dos padrões usados hoje. Elas foram reescritas para valer em qualquer ferramenta.
+
+## Como o guia está organizado
+
+O guia não é uma cópia da documentação das ferramentas. Ele **conduz você até o que fazer**:
+
+| Parte | Para quê |
+|---|---|
+| **Roteiros guiados** | Você responde algumas perguntas e recebe um passo a passo para a sua ferramenta, com prompts e configurações prontos para copiar. Comece por [Configurar meu ambiente](/configurar) ou [Estender meu agente](/estender). |
+| **[Ferramentas](/ferramentas)** | Comparação entre agentes e geradores de [AGENTS.md](/ferramentas/agents-md) e de [permissões](/ferramentas/permissoes). |
+| **[Regras](/regras)** | As regras obrigatórias do laboratório. |
+| **[Aprofundar](/aprofundar)** | Os porquês: artigos sobre contexto, instruções, segurança. Os passos dos roteiros apontam para eles. |
+
+Se preferir ler antes de fazer:
+
+| Se você… | Comece por |
+|---|---|
+| está começando com agentes | [Princípios](/aprofundar/principios) → [Fluxo de trabalho](/aprofundar/ciclo-de-trabalho) |
+| já usa agentes e quer resultados melhores | [Gestão de contexto](/aprofundar/gestao-de-contexto) → [Antipadrões](/aprofundar/antipadroes) |
+| mantém um repositório | [AGENTS.md](/aprofundar/agents-md) → [Memória](/aprofundar/memoria) |
+| cuida de infraestrutura ou segurança | [Permissões](/aprofundar/permissoes) → [Produção e infra](/aprofundar/producao-e-infra) |
+
+## Legenda de normatividade
+
+O guia mistura **regras obrigatórias** e **recomendações**. As palavras abaixo seguem o espírito da [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
+
+| Termo | Significado |
+|---|---|
+| **DEVE / NÃO DEVE** | Regra obrigatória do laboratório. Não há exceção sem aprovação da coordenação. |
+| **DEVERIA / NÃO DEVERIA** | Recomendação forte. Ignorar exige um bom motivo. |
+| **RECOMENDA-SE / PODE** | Boa prática ou opção. Use o bom senso. |
+
+As regras obrigatórias aparecem em caixas como esta:
+
+<Regra id="R1" />
+
+A lista completa está em [Regras obrigatórias](/regras).
+
+:::info[Status deste guia]
+Este é um **protótipo** em validação pela coordenação do ATLab. As regras estão marcadas como *Proposta* até serem aprovadas. O site não guarda dados seus: as respostas dos roteiros ficam só na URL e o progresso, só na aba aberta. Veja o [histórico de mudanças](/aprofundar/historico).
+:::

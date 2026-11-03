@@ -1,0 +1,230 @@
+.pular {
+  position: absolute;
+  left: -999px;
+  top: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: var(--cor-primaria);
+  color: var(--cor-sobre-primaria);
+  border-radius: var(--raio-pequeno);
+}
+
+.pular:focus {
+  left: 0.5rem;
+}
+
+.aviso {
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  background: var(--cor-aviso-suave);
+  color: var(--cor-texto);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--cor-fundo) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.6rem;
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 500;
+  color: var(--cor-primaria-forte);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.marca:hover {
+  color: var(--cor-primaria-forte);
+}
+
+/*
+ * No logo, o nome "ATLAB" ocupa só a parte de baixo da imagem (linhas 27 a 79
+ * de 80): o símbolo sobe acima dele. O centro do nome fica 16,25% da altura
+ * abaixo do centro da imagem; subir a imagem nessa medida põe o nome no mesmo
+ * eixo do texto "Guia de Agentes de IA", do menu e da busca.
+ */
+.marcaLogo {
+  display: block;
+  height: 2.1rem;
+  width: auto;
+  transform: translateY(-16.25%);
+}
+
+/* Mesma altura do nome "ATLAB" (≈ 2/3 da imagem). */
+.marcaSeparador {
+  display: inline-block;
+  width: 1px;
+  height: 1.4rem;
+  background: var(--cor-borda);
+}
+
+.marcaNome {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.nav a {
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--raio-pequeno);
+  color: var(--cor-texto-suave);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
+}
+
+.nav a:global(.active) {
+  color: var(--cor-primaria-forte);
+  background: var(--cor-primaria-suave);
+  box-shadow: inset 0 -2px 0 var(--cor-destaque);
+}
+
+.extras {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.icone {
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.icone:hover {
+  color: var(--cor-texto);
+  border-color: var(--cor-primaria);
+}
+
+.principal {
+  flex: 1 0 auto;
+}
+
+.rodape {
+  margin-top: 4rem;
+  background: var(--cor-rodape-fundo);
+  color: var(--cor-rodape-texto);
+  font-size: 0.88rem;
+}
+
+.rodape a {
+  color: var(--cor-rodape-link);
+}
+
+.rodape a:hover {
+  color: var(--cor-rodape-texto);
+}
+
+.rodapeConteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 2rem;
+  padding-bottom: 1.75rem;
+}
+
+.rodapeMarcas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem 1.75rem;
+}
+
+.rodapeMarcas a {
+  display: block;
+}
+
+.logoAtlab {
+  display: block;
+  height: 2.6rem;
+  width: auto;
+}
+
+.logoParceiro {
+  display: block;
+  height: 2.5rem;
+  width: auto;
+}
+
+.rodapeSeparador {
+  align-self: stretch;
+  width: 1px;
+  background: color-mix(in srgb, var(--cor-rodape-texto) 35%, transparent);
+}
+
+.rodapeTexto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--cor-rodape-texto) 25%, transparent);
+}
+
+.rodapeLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 720px) {
+  .barra {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .marcaSeparador {
+    height: 1.2rem;
+  }
+
+  .marcaLogo {
+    height: 1.8rem;
+  }
+
+  .marcaNome {
+    font-size: 0.92rem;
+  }
+
+  .rodapeSeparador {
+    display: none;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    margin: 0 -0.6rem;
+  }
+}

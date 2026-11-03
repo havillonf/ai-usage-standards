@@ -1,0 +1,110 @@
+---
+title: Permissões e auto-aprovação
+description: Como configurar o que o agente pode fazer sem pedir, e quando a autonomia total é aceitável.
+---
+
+Um agente executa comandos, edita arquivos e acessa a rede **com as suas permissões de usuário**. As configurações de permissão definem o que ele pode fazer sozinho e o que precisa da sua aprovação.
+
+<Regra id="R3" />
+
+## Os níveis de autonomia
+
+| Nível | Como funciona | Quando usar |
+|---|---|---|
+| **Somente leitura / planejamento** | O agente lê e propõe, mas não edita nem executa | Explorar código desconhecido, desenhar a abordagem |
+| **Aprovação manual** | Cada edição e cada comando pede confirmação | Padrão para começar num projeto ou numa ferramenta nova |
+| **Lista de permissões** | Comandos e ações conhecidos rodam sem perguntar; o resto pede confirmação | Uso diário, depois de conhecer o projeto |
+| **Autonomia total ("YOLO")** | Nada pede confirmação | **Só** em contêiner ou VM descartável, sem credenciais reais |
+
+:::warning[Fadiga de aprovação]
+A aprovação manual é segura, mas cansa: depois da décima confirmação, você passa a clicar sem ler. A saída **não** é liberar tudo. É montar uma **lista de permissões** para o que é seguro e repetitivo (rodar testes, lint, `git status`), mantendo a confirmação para o que importa.
+:::
+
+## Recomendações
+
+- **Permita** sem perguntar: leitura dentro do projeto, testes, lint, formatação, comandos `git` de consulta.
+- **Peça confirmação** para: edições (até você confiar no fluxo), instalação de pacotes, comandos de rede, `git push`.
+- **Negue**: leitura de arquivos de segredos (veja [Segredos](/aprofundar/segredos)), comandos destrutivos (`rm -rf`, `git push --force`, `DROP`), acesso a produção.
+- **Restrinja ao workspace**: o agente não precisa ler nem escrever fora da pasta do projeto.
+- **Versione as regras do projeto** (quando a ferramenta permite) para que todo o time tenha a mesma base. Guarde ajustes pessoais em arquivos locais.
+- **Autonomia total** só em ambiente isolado: devcontainer, VM ou contêiner sem montar o seu `$HOME`, sem credenciais de produção e, de preferência, com rede restrita.
+
+## Em cada ferramenta
+
+<NaPratica>
+<TabItem value="opencode">
+
+As permissões ficam na chave `permission` do `opencode.json`, com os valores `allow`, `ask` e `deny`. Nos padrões, a última regra que casa é a que vale, então coloque o `"*"` primeiro:
+
+```json title="opencode.json"
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "npm test*": "allow",
+      "npm run lint*": "allow",
+      "git push *": "deny",
+      "rm -rf *": "deny"
+    },
+    "webfetch": "ask"
+  }
+}
+```
+
+- Por padrão, quase tudo é `allow`. Ajuste para `ask` no que importa.
+- Acesso fora do diretório do projeto (`external_directory`) pede confirmação por padrão.
+- A opção `--auto` aprova tudo o que seria `ask`, mas as regras `deny` continuam valendo.
+
+</TabItem>
+<TabItem value="cline">
+
+O Cline usa chaves de **auto-aprovação** por categoria (Settings → Auto Approve):
+
+- **Recomendado ligar:** "Read project files".
+- **Ligar só depois de conhecer o fluxo:** "Edit project files" e "Execute safe commands".
+- **Manter desligado:** "Read all files", "Edit all files" (fora do workspace) e "Execute all commands".
+- **MCP e navegador:** avalie servidor a servidor.
+
+O **YOLO Mode** aprova tudo, inclusive a troca de Plan para Act, e a própria documentação diz que ele *"desativa todas as verificações de segurança"*. Use só em ambiente isolado. Ative também os **Checkpoints** para poder desfazer edições.
+
+</TabItem>
+<TabItem value="claude-code">
+
+As regras ficam em `.claude/settings.json` (versionado, do projeto), `.claude/settings.local.json` (pessoal) ou `~/.claude/settings.json` (global). A ordem de avaliação é **deny → ask → allow**: um `deny` sempre vence.
+
+```json title=".claude/settings.json"
+{
+  "permissions": {
+    "allow": ["Bash(npm test *)", "Bash(npm run lint *)", "Bash(git diff *)"],
+    "ask": ["Bash(git push *)"],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./secrets/**)", "Bash(rm -rf *)"]
+  }
+}
+```
+
+- **Modos:** manual, `plan`, auto (um classificador revisa as ações) e `bypassPermissions`. A própria documentação diz para usar o `bypassPermissions` *"só em ambientes isolados como contêineres ou VMs"*.
+- **Sandbox:** `/sandbox` ativa o isolamento de sistema de arquivos e rede no nível do sistema operacional.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Execução no terminal:** use **"Request Review"** (pede confirmação para todo comando, exceto os da allowlist). Evite **"Always Proceed"**, a opção de maior risco.
+- **Strict mode:** força "Request Review", ignora a allowlist, respeita o `.gitignore`, isola o workspace e ativa o sandbox de terminal sem rede.
+- **Sandbox de terminal:** restringe escritas ao workspace (macOS e Linux).
+- **Acesso fora do workspace:** mantenha desligado (é o padrão).
+- **No CLI:** `toolPermission: "request-review"` (padrão) e regras `permissions` com `allow`, `ask` e `deny`. `deny` vence `ask`, que vence `allow`.
+
+</TabItem>
+</NaPratica>
+
+## Fontes
+
+- Anthropic — [Configure permissions](https://code.claude.com/docs/en/permissions).
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Configure permissions*.
+- OpenCode — [Permissions](https://opencode.ai/docs/permissions/).
+- Cline — [Auto Approve](https://docs.cline.bot/features/auto-approve).
+- Antigravity — [Settings](https://antigravity.google/docs/settings?tab=ide).

@@ -1,0 +1,30 @@
+.dialogo {
+  width: min(28rem, calc(100vw - 2rem));
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1.25rem 1.5rem;
+  background: var(--cor-superficie-elevada);
+  color: var(--cor-texto);
+  box-shadow: var(--sombra-elevada);
+}
+
+.dialogo::backdrop {
+  background: var(--cor-veu);
+}
+
+.titulo {
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem;
+}
+
+.corpo {
+  color: var(--cor-texto-suave);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}

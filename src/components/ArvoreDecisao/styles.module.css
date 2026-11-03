@@ -1,0 +1,47 @@
+.arvore {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  background: var(--cor-superficie);
+}
+
+.passo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cor-texto-suave);
+  margin-bottom: 0.5rem;
+}
+
+.pergunta {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ajuda {
+  font-size: 0.9rem;
+  color: var(--cor-texto-suave);
+}
+
+.botoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.resultado {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 0.25rem;
+}
+
+.navegacao {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--cor-borda);
+  padding-top: 0.5rem;
+}

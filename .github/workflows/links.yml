@@ -1,0 +1,29 @@
+# Verifica links externos do conteúdo (a documentação das ferramentas muda de lugar).
+# Links internos são verificados pelos testes (npm test).
+# Roda semanalmente, em PRs que mexem no conteúdo e sob demanda.
+
+name: Links
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  pull_request:
+    paths: ['src/content/**', 'src/data/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config .lychee.toml
+            'src/content/**/*.mdx'
+            'src/content/**/*.ts'
+            'src/data/*.ts'
+          fail: true

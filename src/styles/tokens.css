@@ -1,0 +1,115 @@
+/*
+ * Tokens de tema — identidade visual do ATLab (Manual de Marca v1).
+ *
+ * Todas as cores e fontes do site saem daqui; os componentes só usam var(--…).
+ * Cores da marca: azul-marinho #184175 e azul-ciano #0770B2, com escalas de
+ * 100 a 10 (mistura com branco). Fonte oficial: Roboto (servida pelo próprio
+ * site, via @fontsource). Os arquivos de logo ficam em public/marca/: use-os
+ * como estão, sem recolorir, esticar ou aplicar efeitos.
+ *
+ * O teste src/styles/contraste.test.ts confere o contraste AA dos pares
+ * texto/fundo: rode `npm test` depois de mudar qualquer cor.
+ */
+
+:root {
+  --fonte-base: 'Roboto', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --fonte-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --raio: 4px;
+  --raio-pequeno: 3px;
+  --largura-conteudo: 1120px;
+  --largura-texto: 760px;
+
+  /* Escalas da marca */
+  --marinho-100: #184175;
+  --marinho-80: #466791;
+  --marinho-60: #748dac;
+  --marinho-40: #a3b3c8;
+  --marinho-20: #d1d9e3;
+  --marinho-10: #e8ecf1;
+  --marinho-5: #f3f6f8;
+  --ciano-100: #0770b2;
+  --ciano-30: #b5d4e8;
+  --ciano-10: #e6f1f7;
+  --azul-claro: #92c1dc;
+
+  --cor-primaria: var(--ciano-100);
+  --cor-primaria-forte: var(--marinho-100);
+  --cor-primaria-suave: var(--ciano-10);
+  --cor-sobre-primaria: #ffffff;
+  --cor-destaque: var(--ciano-100);
+
+  --cor-fundo: #ffffff;
+  --cor-superficie: var(--marinho-5);
+  --cor-superficie-elevada: #ffffff;
+  --cor-borda: var(--marinho-20);
+  --cor-texto: #15233a;
+  --cor-texto-suave: var(--marinho-80);
+  --cor-codigo-fundo: var(--marinho-5);
+
+  --cor-rodape-fundo: var(--marinho-100);
+  --cor-rodape-texto: var(--marinho-10);
+  --cor-rodape-link: var(--azul-claro);
+
+  /* O manual não define cores de estado: tons a validar com a designer. */
+  --cor-regra: #b42318;
+  --cor-recomendacao: var(--ciano-100);
+  --cor-proposta: #9a5a06;
+  --cor-aprovada: #1f7a3d;
+  --cor-sucesso: #1f7a3d;
+  --cor-sucesso-suave: #e7f4ec;
+  --cor-aviso: #9a5a06;
+  --cor-aviso-suave: #fdf4e3;
+  --cor-perigo: #b42318;
+  --cor-perigo-suave: #fdecea;
+  --cor-info: var(--ciano-100);
+  --cor-info-suave: var(--ciano-10);
+
+  /* Sem sombra nos cartões (painéis planos, como no manual); só diálogos e busca flutuam. */
+  --sombra: none;
+  --sombra-elevada: 0 12px 32px rgb(24 65 117 / 22%);
+  --cor-veu: rgb(12 32 58 / 55%);
+}
+
+/*
+ * Tema escuro: DESATIVADO nesta fase (o site usa só o tema claro). Nada aplica
+ * data-tema='escuro' hoje. Os valores abaixo são do tema neutro anterior e
+ * serão refeitos com a marca quando o tema escuro voltar.
+ */
+:root[data-tema='escuro'] {
+  --cor-primaria: #8fb2ea;
+  --cor-primaria-forte: #b3cbf1;
+  --cor-primaria-suave: #1f2c42;
+  --cor-sobre-primaria: #0d1522;
+  --cor-destaque: #8fb2ea;
+
+  --cor-fundo: #12161c;
+  --cor-superficie: #1a1f27;
+  --cor-superficie-elevada: #212732;
+  --cor-borda: #333b48;
+  --cor-texto: #e6e9ee;
+  --cor-texto-suave: #a5adba;
+  --cor-codigo-fundo: #1f2530;
+
+  --cor-rodape-fundo: #0d1522;
+  --cor-rodape-texto: #e6e9ee;
+  --cor-rodape-link: #8fb2ea;
+
+  --cor-regra: #f97066;
+  --cor-recomendacao: #8fb2ea;
+  --cor-proposta: #f5b14c;
+  --cor-aprovada: #47cd89;
+  --cor-sucesso: #47cd89;
+  --cor-sucesso-suave: #16301f;
+  --cor-aviso: #f5b14c;
+  --cor-aviso-suave: #33270f;
+  --cor-perigo: #f97066;
+  --cor-perigo-suave: #3a1a17;
+  --cor-info: #8fb2ea;
+  --cor-info-suave: #1f2c42;
+
+  --sombra: 0 1px 2px rgb(0 0 0 / 40%);
+  --sombra-elevada: 0 12px 32px rgb(0 0 0 / 55%);
+  --cor-veu: rgb(0 0 0 / 60%);
+  color-scheme: dark;
+}

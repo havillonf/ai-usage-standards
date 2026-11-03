@@ -1,0 +1,36 @@
+---
+title: Bibliografia comentada
+description: As fontes que embasam o guia, com uma nota sobre o que cada uma oferece.
+---
+
+## Anthropic — engenharia
+
+- **[Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)** (dez. 2024). Distingue *workflows* de *agentes*, defende soluções simples e a interface agente–computador. É a base dos [Princípios](/aprofundar/principios).
+- **[Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)** (set. 2025). Trata de *context rot*, orçamento de atenção, recuperação *just in time*, compactação, notas estruturadas e subagentes. É a base de [Gestão de contexto](/aprofundar/gestao-de-contexto).
+- **[Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)** (out. 2025). Apresenta skills e *progressive disclosure*.
+- **[Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)** (set. 2025). Explica como desenhar e avaliar ferramentas e servidores MCP para agentes.
+
+## Anthropic — documentação do Claude Code
+
+- **[Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)**. Reúne o fluxo explorar → planejar → implementar → verificar, como pedir, gestão de contexto e antipadrões. Base de [Fluxo de trabalho](/aprofundar/ciclo-de-trabalho).
+- **[How Claude remembers your project](https://code.claude.com/docs/en/memory)**. Cobre CLAUDE.md, AGENTS.md e memória automática.
+- **[Configure permissions](https://code.claude.com/docs/en/permissions)**. Detalha regras allow/ask/deny e os modos de permissão.
+
+## Padrões abertos
+
+- **[AGENTS.md](https://agents.md/)**: formato aberto de instruções de projeto, mantido pela Agentic AI Foundation.
+- **[Agent Skills](https://agentskills.io/)**: especificação aberta do formato `SKILL.md`.
+- **[Model Context Protocol](https://modelcontextprotocol.io/)**: especificação do protocolo e [boas práticas de segurança](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices).
+
+## Documentação das ferramentas de referência
+
+- **OpenCode**: [documentação](https://opencode.ai/docs/), em especial [Rules](https://opencode.ai/docs/rules/), [Agents](https://opencode.ai/docs/agents/) e [Permissions](https://opencode.ai/docs/permissions/).
+- **Cline**: [documentação](https://docs.cline.bot/), em especial [Cline Rules](https://docs.cline.bot/customization/cline-rules), [Plan & Act](https://docs.cline.bot/features/plan-and-act) e [Auto Approve](https://docs.cline.bot/features/auto-approve).
+- **Claude Code**: [documentação](https://code.claude.com/docs/).
+- **Antigravity**: [documentação](https://antigravity.google/docs/), em especial [Rules](https://antigravity.google/docs/rules) e [Settings](https://antigravity.google/docs/settings?tab=ide).
+
+## Segurança
+
+- **[OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/)**: prompt injection, vazamento de informação sensível, cadeia de suprimentos e excesso de agência.
+- **Simon Willison — [The lethal trifecta for AI agents](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)** (jun. 2025): a combinação de dados privados, conteúdo não confiável e comunicação externa.
+- **Spracklen et al. — [Package hallucinations](https://arxiv.org/abs/2406.10279)** (USENIX Security 2025): estudo sobre pacotes inventados por LLMs (*slopsquatting*).

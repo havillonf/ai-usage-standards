@@ -1,0 +1,65 @@
+.bloco {
+  margin: 1rem 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-codigo-fundo);
+  overflow: hidden;
+}
+
+.prompt {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-suave);
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.85rem;
+  border-bottom: 1px solid var(--cor-borda);
+  font-size: 0.85rem;
+}
+
+.titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-mono);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.etiqueta {
+  font-family: var(--fonte-base);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: var(--cor-primaria);
+  color: var(--cor-sobre-primaria);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.acoes {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.pre {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.prompt .pre {
+  white-space: pre-wrap;
+}

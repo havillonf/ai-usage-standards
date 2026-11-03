@@ -1,0 +1,116 @@
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.botao:hover {
+  color: var(--cor-texto);
+  border-color: var(--cor-primaria);
+}
+
+.atalho {
+  font-size: 0.72rem;
+}
+
+@media (max-width: 720px) {
+  .rotulo,
+  .atalho {
+    display: none;
+  }
+}
+
+.dialogo {
+  width: min(40rem, calc(100vw - 2rem));
+  margin-top: 10vh;
+  padding: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-elevada);
+  color: var(--cor-texto);
+  box-shadow: var(--sombra-elevada);
+}
+
+.dialogo::backdrop {
+  background: var(--cor-veu);
+}
+
+.caixa {
+  padding: 0.75rem;
+}
+
+.campo {
+  width: 100%;
+  font: inherit;
+  font-size: 1.05rem;
+  padding: 0.65rem 0.8rem;
+  border: 2px solid var(--cor-primaria);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.campo:focus {
+  outline: none;
+}
+
+.resultados {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.resultados li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--raio-pequeno);
+  cursor: pointer;
+}
+
+.resultados li > strong {
+  grid-column: 2;
+}
+
+.tipo {
+  grid-row: span 2;
+  align-self: start;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.45rem;
+  margin-top: 0.2rem;
+  border-radius: 999px;
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-forte);
+}
+
+.contexto {
+  grid-column: 2;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.ativo {
+  background: var(--cor-superficie);
+  outline: 1px solid var(--cor-borda);
+}
+
+.vazio,
+.ajuda {
+  font-size: 0.82rem;
+  color: var(--cor-texto-suave);
+  margin: 0.6rem 0.25rem 0;
+}

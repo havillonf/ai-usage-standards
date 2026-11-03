@@ -1,0 +1,15 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Logs e sistema
+npm-debug.log*
+.DS_Store
+
+# Ambiente
+.env
+.env.*
+!.env.example

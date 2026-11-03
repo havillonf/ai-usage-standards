@@ -1,0 +1,263 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fonte-base);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+a {
+  color: var(--cor-primaria);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--cor-primaria-forte);
+}
+
+:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.25;
+  margin: 1.6em 0 0.6em;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: var(--cor-primaria-forte);
+  margin-top: 0;
+}
+
+/* Traço curto em ciano abaixo do título da página, como no manual de marca. */
+h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin-top: 0.75rem;
+  background: var(--cor-destaque);
+}
+
+h2,
+h3 {
+  font-weight: 500;
+  color: var(--cor-primaria-forte);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+code {
+  font-family: var(--fonte-mono);
+  font-size: 0.9em;
+  background: var(--cor-codigo-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+}
+
+pre code {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+kbd {
+  font-family: var(--fonte-mono);
+  font-size: 0.85em;
+  border: 1px solid var(--cor-borda);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 0.35em;
+  background: var(--cor-superficie);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border: 1px solid var(--cor-borda);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--cor-superficie);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--largura-conteudo);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Rodapé sempre no fim da janela */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Botões */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  padding: 0.6rem 1rem;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-superficie-elevada);
+  color: var(--cor-texto);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.botao:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-texto);
+}
+
+.botao:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.botao-primario {
+  background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: var(--cor-sobre-primaria);
+}
+
+.botao-primario:hover {
+  background: var(--cor-primaria-forte);
+  border-color: var(--cor-primaria-forte);
+  color: var(--cor-sobre-primaria);
+}
+
+.botao-pequeno {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.botao-link {
+  border-color: transparent;
+  background: none;
+  color: var(--cor-primaria);
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.botao-link:hover {
+  border-color: transparent;
+  color: var(--cor-primaria-forte);
+  text-decoration: underline;
+}
+
+/* Texto longo (artigos e trechos em Markdown) */
+.prosa {
+  max-width: var(--largura-texto);
+}
+
+.prosa > :first-child {
+  margin-top: 0;
+}
+
+.prosa table {
+  display: block;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.prosa li + li {
+  margin-top: 0.25rem;
+}
+
+.prosa img {
+  max-width: 100%;
+}
+
+/* Caixas de destaque (:::tip, :::warning…) */
+.callout {
+  border: 1px solid var(--cor-borda);
+  border-left: 5px solid var(--cor-info);
+  background: var(--cor-info-suave);
+  border-radius: var(--raio-pequeno);
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+}
+
+.callout > :last-child {
+  margin-bottom: 0;
+}
+
+.callout-titulo {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.callout-tip {
+  border-left-color: var(--cor-sucesso);
+  background: var(--cor-sucesso-suave);
+}
+
+.callout-warning {
+  border-left-color: var(--cor-aviso);
+  background: var(--cor-aviso-suave);
+}
+
+.callout-danger {
+  border-left-color: var(--cor-perigo);
+  background: var(--cor-perigo-suave);
+}

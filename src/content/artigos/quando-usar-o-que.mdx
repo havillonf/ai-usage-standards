@@ -1,0 +1,27 @@
+---
+title: Quando usar o quê
+description: Onde colocar cada tipo de instrução ou capacidade — AGENTS.md, skill, comando, MCP ou hook.
+---
+
+Agentes oferecem vários mecanismos de extensão, e escolher o mecanismo errado desperdiça contexto ou deixa de garantir o que precisava ser garantido. Responda às perguntas abaixo para descobrir onde colocar o que você quer ensinar ao agente:
+
+<ArvoreDecisao />
+
+## Resumo
+
+| Mecanismo | Carregado | Quem dispara | Garante execução? | Use para |
+|---|---|---|---|---|
+| **AGENTS.md** | Em toda sessão | Automático | Não (é uma sugestão) | Fatos curtos que valem sempre: comandos, convenções, armadilhas |
+| **Skill** | Nome e descrição sempre; o conteúdo, sob demanda | O agente (ou você) | Não | Procedimentos e conhecimento de domínio usados às vezes |
+| **Comando / prompt salvo** | Quando invocado | Você | Não | Fluxos repetitivos com efeitos colaterais |
+| **Servidor MCP** | As descrições das ferramentas, sempre que habilitado | O agente | Não | Acesso a sistemas externos e dados ao vivo |
+| **Hook / regra de permissão** | Sempre (executado pela ferramenta) | Evento da ferramenta | **Sim** | O que deve acontecer, ou nunca acontecer, sem exceção |
+
+:::tip[Comece simples]
+Na dúvida, comece pelo prompt. Quando você se pegar repetindo a mesma instrução, promova-a: primeiro para o `AGENTS.md` (se for curta e geral) ou para uma skill (se for um procedimento). A Anthropic resume a ideia assim: encontre a solução mais simples e só aumente a complexidade quando for necessário.
+:::
+
+## Fontes
+
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Configure your environment*.
+- Anthropic — [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents).

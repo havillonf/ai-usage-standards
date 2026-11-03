@@ -1,0 +1,105 @@
+---
+title: Gestão de contexto
+description: Por que o contexto é o recurso mais importante de um agente e como gerenciá-lo.
+---
+
+## O recurso mais importante
+
+Tudo o que o agente "sabe" numa sessão está na **janela de contexto**:
+
+- as suas mensagens;
+- as instruções de projeto;
+- cada arquivo lido;
+- cada saída de comando.
+
+Ela enche rápido: uma única investigação de bug pode consumir dezenas de milhares de tokens.
+
+E o desempenho **cai à medida que o contexto enche**. Quanto mais tokens, pior o modelo recupera informações do contexto. A Anthropic chama isso de *context rot* e descreve o contexto como um **orçamento de atenção** finito. Com o contexto cheio, o agente "esquece" instruções do começo e erra mais.
+
+Isso vale para **qualquer modelo**, e pesa ainda mais em modelos com janelas menores. A meta, nas palavras da Anthropic, é encontrar *"o menor conjunto de tokens de alto sinal que maximize a chance do resultado desejado"*.
+
+## Práticas
+
+### Uma tarefa por sessão
+
+Misturar tarefas não relacionadas na mesma sessão enche o contexto de informação irrelevante. **Limpe o contexto (ou abra uma sessão nova) entre tarefas.**
+
+### Recomece em vez de insistir
+
+Se você já corrigiu o agente **mais de duas vezes no mesmo ponto**, o contexto está poluído com tentativas fracassadas. Recomece com um pedido melhor, que incorpore o que você aprendeu. Uma sessão limpa com um bom pedido quase sempre supera uma sessão longa cheia de correções.
+
+### Compacte de forma dirigida
+
+As ferramentas resumem o histórico (compactação) quando o contexto se aproxima do limite. Dá também para pedir a compactação manualmente e dizer o que preservar: arquivos modificados, comandos de teste, decisões tomadas.
+
+### Delegue a exploração
+
+Investigar um codebase significa ler muitos arquivos, e cada um ocupa contexto. **Subagentes** exploram num contexto separado e devolvem só um resumo, mantendo limpa a conversa principal:
+
+```text title="Exemplo de pedido"
+Use um subagente para investigar como o sistema de autenticação faz o
+refresh de token e se já existem utilitários de OAuth que eu possa reutilizar.
+```
+
+### Busque sob demanda
+
+Em vez de colar arquivos inteiros "por precaução", dê **referências**: caminhos, nomes de funções, consultas. O agente carrega o conteúdo quando precisa. A Anthropic chama isso de recuperação *just in time*.
+
+### Saídas enxutas
+
+Comandos com saída enorme (logs completos, `npm install` verboso, dumps de banco) consomem contexto sem agregar. Peça filtros: `tail`, `grep`, apenas os testes que falharam, `--quiet`.
+
+### Instruções de projeto curtas
+
+O `AGENTS.md` é carregado em **toda** sessão. Cada linha desnecessária custa contexto sempre. Veja [AGENTS.md](/aprofundar/agents-md).
+
+### Poucos servidores MCP
+
+Cada servidor MCP habilitado adiciona as descrições das suas ferramentas ao contexto. Habilite só os que o projeto usa.
+
+## Em cada ferramenta
+
+<NaPratica>
+<TabItem value="opencode">
+
+- **Nova sessão:** `/new`.
+- **Compactar:** `/compact`.
+- **Desfazer a última mensagem e as mudanças de arquivo que ela causou:** `/undo`.
+- **Subagentes:** o agente **explore** (somente leitura) e o **general**. Invoque com `@explore` ou `@general`.
+
+</TabItem>
+<TabItem value="cline">
+
+- **Nova tarefa:** comece uma nova tarefa no painel do Cline em vez de continuar uma longa.
+- **Uso de contexto:** acompanhe o medidor de contexto da tarefa e compacte (ou recomece) antes de chegar ao limite.
+- **Checkpoints:** use para voltar a um estado anterior sem acumular tentativas no histórico.
+
+</TabItem>
+<TabItem value="claude-code">
+
+- **Limpar o contexto:** `/clear`.
+- **Compactar com foco:** `/compact <instruções>`.
+- **Ver o que ocupa o contexto:** `/context`.
+- **Pergunta paralela, sem entrar no histórico:** `/btw`.
+- **Voltar a um checkpoint ou resumir a partir dele:** <kbd>Esc</kbd> <kbd>Esc</kbd> ou `/rewind`.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Nova conversa:** comece uma nova conversa por tarefa.
+- **Agentes em paralelo:** use o gerenciador de agentes para separar investigações paralelas em vez de acumulá-las numa conversa só.
+- **Contexto das regras:** regras com gatilho `model_decision` só carregam o conteúdo completo quando a tarefa combina com a descrição.
+
+</TabItem>
+</NaPratica>
+
+:::note
+Os comandos exatos mudam entre versões. Na dúvida, consulte a página da ferramenta em [Ferramentas](/ferramentas).
+:::
+
+## Fontes
+
+- Anthropic — [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) (set. 2025).
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Manage context aggressively*; *Use subagents for investigation*.
+- OpenCode — [Agents](https://opencode.ai/docs/agents/).
+- Antigravity — [Rules](https://antigravity.google/docs/rules).

@@ -1,0 +1,109 @@
+---
+title: Segredos e credenciais
+description: Como manter senhas, tokens e chaves fora do alcance do agente.
+---
+
+<Regra id="R2" />
+
+## Por que isso importa
+
+Tudo o que o agente lê vai para o **contexto do modelo**. Dependendo da ferramenta e do provedor, isso inclui:
+
+- **ser enviado para um serviço externo**;
+- **ser registrado em logs** da ferramenta ou do provedor;
+- **ser gravado em memórias e históricos** de sessão no disco;
+- **reaparecer em código, commits ou mensagens** gerados pelo agente.
+
+Além disso, um agente vulnerável a [prompt injection](/aprofundar/prompt-injection) pode ser induzido a **enviar** o que leu para fora.
+
+## Por onde os segredos vazam
+
+| Caminho | Exemplo | Como evitar |
+|---|---|---|
+| Arquivos lidos | O agente abre `.env` para "entender a configuração" | Regras de negação de leitura (abaixo) |
+| Comandos de shell | `env`, `printenv`, `cat ~/.aws/credentials`, `docker inspect` | Não ter credenciais sensíveis no ambiente da sessão; exigir aprovação para comandos |
+| Prompts | Você cola uma connection string para "ajudar a depurar" | Use valores fictícios; descreva o formato, não o valor |
+| Saídas de ferramentas | Logs ou respostas de API que contêm tokens | Filtre as saídas; use tokens de teste |
+| Memória e instruções | Um token salvo no `AGENTS.md` ou na memória automática | Nunca guarde credenciais nesses arquivos ([Memória](/aprofundar/memoria)) |
+
+## Recomendações
+
+- **Bloqueie a leitura** de `.env`, `.env.*`, `secrets/`, chaves (`*.pem`, `*.key`) e diretórios de credenciais.
+- **Ignorar não é bloquear.** Arquivos de "ignore" de algumas ferramentas só evitam o carregamento automático: o agente ainda pode ler o arquivo via shell ou por menção explícita. Use regras de permissão ou hooks, que **bloqueiam** de fato.
+- **Não deixe credenciais poderosas no ambiente da sessão.** Variáveis de ambiente do seu terminal ficam visíveis para qualquer comando que o agente rode.
+- **Use credenciais de desenvolvimento** com escopo mínimo e validade curta. Nunca use credenciais de produção numa sessão com agente.
+- **Prefira gerenciadores de segredos** (cofres, `pass`, secret managers da nuvem), que injetam o valor só no processo que precisa dele.
+- **Mantenha um `.env.example`** sem valores reais, para o agente entender quais variáveis existem.
+- **Use scanners de segredos** (por exemplo, hooks de pre-commit) para pegar o que escapar.
+
+:::danger[Vazou? Troque.]
+Se uma credencial apareceu em um prompt, em uma saída lida pelo agente, em um commit ou em uma memória, **considere-a comprometida**: revogue e gere outra. Apagar o texto não desfaz o envio.
+:::
+
+## Em cada ferramenta
+
+<NaPratica>
+<TabItem value="opencode">
+
+Por padrão, o OpenCode já pede confirmação para ler `.env`. Para **bloquear** a leitura:
+
+```json title="opencode.json"
+{
+  "permission": {
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "secrets/**": "deny"
+    }
+  }
+}
+```
+
+Como a última regra que casa é a que vale, mantenha `"*"` primeiro e as exceções depois.
+
+</TabItem>
+<TabItem value="cline">
+
+- **`.clineignore` não é uma barreira de segurança**: arquivos ignorados ainda podem ser lidos por menção `@` ou por comandos de shell.
+- **Para bloquear de fato**, use o hook `PreToolUse` documentado pelo Cline, que barra leitura, edição e comandos que casem com os padrões. Ele tem limitações, descritas na documentação.
+- **Mantenha "Execute all commands" desligado**, para que comandos como `cat .env` peçam confirmação.
+
+</TabItem>
+<TabItem value="claude-code">
+
+Adicione regras `deny` de leitura em `.claude/settings.json`:
+
+```json title=".claude/settings.json"
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*.pem)"
+    ]
+  }
+}
+```
+
+Um arquivo `.claudeignore` **não tem efeito**: use regras `Read` de negação. O `deny` sempre vence o `allow`.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Strict mode:** faz o agente respeitar o `.gitignore` (onde arquivos `.env` normalmente já estão) e desliga o acesso fora do workspace.
+- **Execução de comandos:** mantenha em "Request Review", para revisar comandos que poderiam ler segredos.
+- **No CLI:** use regras `deny` em `permissions`. Elas bloqueiam a ação em qualquer modo.
+
+</TabItem>
+</NaPratica>
+
+## Fontes
+
+- Anthropic — [Configure permissions](https://code.claude.com/docs/en/permissions): *Read deny rules*.
+- OpenCode — [Permissions](https://opencode.ai/docs/permissions/).
+- Cline — [.clineignore](https://docs.cline.bot/customization/clineignore).
+- Antigravity — [Settings](https://antigravity.google/docs/settings?tab=ide).
+- OWASP — [Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/): *Sensitive Information Disclosure*.

@@ -1,0 +1,29 @@
+---
+title: Antipadrões e quando não usar agentes
+description: Erros comuns ao trabalhar com agentes e situações em que é melhor não usá-los.
+---
+
+## Antipadrões comuns
+
+| Antipadrão | O que acontece | Correção |
+|---|---|---|
+| **Sessão "pia da cozinha"** | Você começa uma tarefa, pergunta algo não relacionado e volta. O contexto fica cheio de ruído. | Uma tarefa por sessão. Limpe o contexto entre tarefas. |
+| **Corrigir em loop** | O agente erra, você corrige, ele erra de novo. O contexto acumula tentativas fracassadas. | Depois de duas correções sem sucesso, recomece com um pedido melhor. |
+| **Instruções de projeto inchadas** | O `AGENTS.md` é tão longo que regras importantes se perdem no ruído. | Pode sem dó. Se o agente já faz certo sem a instrução, apague-a ou transforme-a em hook. |
+| **Confiar e não verificar** | O agente entrega uma implementação plausível que não trata os casos de borda. | Sempre dê uma forma de verificação. Se não dá para verificar, não entregue. |
+| **Exploração infinita** | "Investigue X" sem escopo: o agente lê centenas de arquivos e enche o contexto. | Delimite a investigação ou delegue a um subagente. |
+| **Aceitar diff sem ler** | Mudanças fora do escopo, arquivos apagados ou testes "ajustados" para passar entram no PR. | Leia o diff inteiro (regra [R1](/regras)). |
+| **Suprimir o erro** | Para "fazer passar", o agente desabilita o teste, captura a exceção sem tratar ou relaxa o tipo. | Peça explicitamente a correção da causa raiz e revise as mudanças nos testes. |
+| **Autonomia total no ambiente real** | Auto-aprovação de tudo na sua máquina, com acesso a credenciais e produção. | Autonomia total só em contêiner ou VM (regra [R3](/regras)). |
+
+## Quando NÃO usar um agente
+
+- **Quando você não consegue verificar o resultado.** Se você não tem como julgar se a resposta está certa, o agente só transfere o risco para depois.
+- **Quando o objetivo é aprender.** Para dominar um conceito, escreva primeiro e use o agente como revisor ou tutor. Veja o [princípio 5](/aprofundar/principios#5-aprender-e-não-só-delegar).
+- **Em decisões críticas sem revisão humana**: segurança, dados de produção, criptografia, controle de acesso. O agente pode ajudar, mas a decisão e a revisão são humanas.
+- **Quando explicar a tarefa custa mais que fazê-la.** Mudanças triviais em código que você conhece bem costumam ser mais rápidas à mão.
+- **Quando a tarefa exige dados ou credenciais que não podem entrar no contexto.** Veja [Segredos](/aprofundar/segredos).
+
+## Fontes
+
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Avoid common failure patterns*.

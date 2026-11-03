@@ -1,0 +1,311 @@
+.pagina {
+  max-width: 900px;
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+  margin-bottom: 1rem;
+}
+
+.trilha a {
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+.trilha a:hover {
+  text-decoration: underline;
+}
+
+.cabecalho h1 {
+  margin-bottom: 0.4rem;
+}
+
+.descricao {
+  color: var(--cor-texto-suave);
+  margin: 0 0 0.75rem;
+  max-width: var(--largura-texto);
+}
+
+.respostas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chip {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-forte);
+}
+
+/* Barra de progresso fixa ao rolar */
+.barra {
+  position: sticky;
+  top: var(--altura-cabecalho, 0px);
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-elevada);
+  box-shadow: var(--sombra);
+}
+
+.progresso {
+  flex: 1 1 14rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.progressoTexto {
+  font-size: 0.88rem;
+}
+
+.trilho {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--cor-borda);
+  overflow: hidden;
+}
+
+.preenchido {
+  height: 100%;
+  background: var(--cor-sucesso);
+  transition: width 0.25s;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.nota {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+  margin: 0.4rem 0 0;
+}
+
+/* Passos */
+.passos {
+  list-style: none;
+  padding: 0;
+  margin: 1.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.passo {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.85rem;
+  scroll-margin-top: 9rem;
+}
+
+.marcador {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  border: 2px solid var(--cor-primaria);
+  color: var(--cor-primaria);
+  background: var(--cor-fundo);
+}
+
+.passoFeito .marcador {
+  background: var(--cor-sucesso);
+  border-color: var(--cor-sucesso);
+  color: var(--cor-fundo);
+}
+
+.passoCorpo {
+  min-width: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem 1.15rem;
+  background: var(--cor-superficie-elevada);
+  box-shadow: var(--sombra);
+}
+
+.passoFeito .passoCorpo {
+  border-color: var(--cor-sucesso);
+}
+
+.passoCabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.passoTitulo {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.resumo {
+  margin-top: 0.5rem;
+}
+
+.resumo p {
+  margin: 0.4rem 0;
+}
+
+.instrucao {
+  margin: 0.85rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  border-left: 4px solid var(--cor-primaria);
+}
+
+.instrucaoRotulo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cor-primaria);
+  margin-bottom: 0.25rem;
+}
+
+.instrucao :global(.prosa) > :last-child {
+  margin-bottom: 0;
+}
+
+.instrucao :global(.prosa) p:first-child {
+  margin-top: 0;
+}
+
+.porque {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.porque summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--cor-primaria);
+}
+
+.porque[open] summary {
+  margin-bottom: 0.4rem;
+}
+
+.fontes {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+  margin: 0.75rem 0 0;
+}
+
+.feito {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.passoFeito .feito {
+  border-color: var(--cor-sucesso);
+  color: var(--cor-sucesso);
+}
+
+.feito input {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.concluido {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio);
+  background: var(--cor-sucesso-suave);
+  color: var(--cor-sucesso);
+  font-weight: 600;
+}
+
+.proximos {
+  margin-top: 2.5rem;
+}
+
+.proximosGrade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.proximo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.proximo span {
+  font-size: 0.88rem;
+  color: var(--cor-texto-suave);
+}
+
+.proximo:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-texto);
+}
+
+@media (max-width: 560px) {
+  .passo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marcador {
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: -0.5rem;
+  }
+
+  .barra {
+    position: static;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preenchido {
+    transition: none;
+  }
+}

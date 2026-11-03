@@ -1,0 +1,48 @@
+---
+title: Cadeia de suprimentos
+description: Pacotes alucinados, dependências novas, skills e servidores MCP de terceiros.
+---
+
+Agentes trazem código de fora para o projeto: sugerem dependências, instalam pacotes, usam skills e servidores MCP escritos por outras pessoas. Cada um desses itens é um ponto de entrada.
+
+<Regra id="R5" />
+
+## Pacotes alucinados (*slopsquatting*)
+
+Modelos às vezes **inventam nomes de pacotes** que soam plausíveis, mas não existem. Pesquisas mostram que esses nomes inventados se repetem entre execuções, e atacantes registram pacotes maliciosos com esses nomes à espera de quem os instale. A prática ganhou o nome de *slopsquatting*.
+
+Antes de aceitar uma dependência nova:
+
+- **confirme que o pacote existe** e é o que você espera: o repositório oficial, o mantenedor, o número de downloads, a data de criação;
+- **desconfie de pacotes recém-criados** ou com nome muito parecido com um popular;
+- **prefira o que o projeto já usa** e peça ao agente que justifique cada dependência nova;
+- **fixe versões** e commite o lockfile;
+- **exija aprovação** para comandos de instalação (`npm install`, `pip install`, `cargo add`…). Veja [Permissões](/aprofundar/permissoes).
+
+## Skills de terceiros
+
+Uma skill é um conjunto de instruções **e scripts** que o agente executa com as suas permissões. Antes de instalar, revise:
+
+- **o `SKILL.md` inteiro**, procurando instruções que fujam do propósito declarado (enviar dados, mexer em credenciais, desativar verificações);
+- **todos os scripts**: o que executam, que rede acessam, que arquivos leem e escrevem;
+- **a origem e a manutenção**: quem publica, se está ativa, a licença.
+
+## Servidores MCP de terceiros
+
+Um servidor MCP pode ler dados, executar ações e devolver texto que o modelo trata como contexto (e que pode conter [prompt injection](/aprofundar/prompt-injection)). Antes de habilitar:
+
+- **prefira servidores oficiais** do fornecedor do sistema ou de fontes reconhecidas;
+- **confira as permissões e os escopos** pedidos e conceda tokens com o **mínimo** necessário (somente leitura, quando possível);
+- **fixe a versão** dos servidores locais e revise as atualizações;
+- **habilite por projeto**, não globalmente.
+
+:::info[Catálogo do ATLab]
+Uma lista de skills e servidores MCP **revisados e recomendados** pelo laboratório está prevista para a fase 2 deste guia.
+:::
+
+## Fontes
+
+- Spracklen et al. — [*We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs*](https://arxiv.org/abs/2406.10279) (USENIX Security 2025).
+- OWASP — [Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/): *Supply Chain*.
+- Model Context Protocol — [Security Best Practices](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices).
+- Anthropic — [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills).
