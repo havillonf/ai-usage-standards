@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 
-const SITE = 'Guia de Agentes de IA — ATLab';
+const SITE = 'ATLAB Agents';
 
 /** Define o <title> da página atual. */
 export function useTituloPagina(titulo?: string): void {
