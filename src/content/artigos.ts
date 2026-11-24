@@ -22,7 +22,7 @@ export interface Artigo {
 }
 
 export const CATEGORIAS: {titulo: string; artigos: string[]}[] = [
-  {titulo: 'Fundamentos e fluxo de trabalho', artigos: ['principios', 'ciclo-de-trabalho', 'gestao-de-contexto', 'antipadroes']},
+  {titulo: 'Fundamentos e fluxo de trabalho', artigos: ['principios', 'ciclo-de-trabalho', 'especificacoes', 'gestao-de-contexto', 'antipadroes']},
   {titulo: 'Instruções, memória e extensões', artigos: ['agents-md', 'memoria', 'quando-usar-o-que']},
   {
     titulo: 'Segurança',

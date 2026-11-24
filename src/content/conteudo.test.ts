@@ -4,7 +4,9 @@ import GithubSlugger from 'github-slugger';
 import {describe, expect, it} from 'vitest';
 import {REGRAS_POR_ID} from '@/data/regras';
 import {MATRIZ} from '@/data/compatibilidade';
+import {EXEMPLOS, SEM_ITEM_OFICIAL, TIPOS} from '@/data/exemplos';
 import {FERRAMENTAS} from '@/data/ferramentas';
+import {STACKS} from '@/data/stacks';
 import {ARTIGOS, CATEGORIAS} from './artigos';
 import {ROTEIROS} from './roteiros';
 import {passosAplicaveis, resolver, type Respostas, type Roteiro} from './tipos';
@@ -19,7 +21,7 @@ const brutos = Object.fromEntries(
     .map((f) => [f.replace('.mdx', ''), readFileSync(resolve(DIR_ARTIGOS, f), 'utf8')]),
 );
 
-const ROTAS_FIXAS = new Set(['/', '/estender', '/estender/nao-sei', '/ferramentas', '/ferramentas/agents-md', '/ferramentas/permissoes', '/regras', '/aprofundar']);
+const ROTAS_FIXAS = new Set(['/', '/estender', '/estender/nao-sei', '/ferramentas', '/ferramentas/agents-md', '/ferramentas/permissoes', '/ferramentas/exemplos-por-stack', '/regras', '/aprofundar']);
 for (const r of ROTEIROS) {
   ROTAS_FIXAS.add(r.caminho);
   ROTAS_FIXAS.add(`${r.caminho}/roteiro`);
@@ -34,7 +36,8 @@ function ancorasDe(slug: string): Set<string> {
 
 function verificarLink(href: string, origem: string): void {
   if (!href.startsWith('/')) return;
-  const [caminho, ancora] = href.split('#');
+  const [semAncora, ancora] = href.split('#');
+  const caminho = semAncora.split('?')[0];
   expect(ROTAS_FIXAS.has(caminho), `${origem}: rota inexistente ${href}`).toBe(true);
   if (ancora && caminho.startsWith('/aprofundar/')) {
     const slug = caminho.replace('/aprofundar/', '');
@@ -152,6 +155,29 @@ describe('dados', () => {
         expect(c.suporte === 'verificar' || Boolean(c.fonte), `${recurso.id}/${f.id}`).toBe(true);
       }
     }
+  });
+
+  it('exemplos por stack: ids únicos, stacks e tipos válidos, fonte oficial e data de verificação', () => {
+    const stacks = new Set(STACKS.map((s) => s.id));
+    const tipos = new Set(TIPOS.map((t) => t.id));
+    expect(new Set(EXEMPLOS.map((e) => e.id)).size).toBe(EXEMPLOS.length);
+    for (const e of EXEMPLOS) {
+      expect(e.stacks.length, e.id).toBeGreaterThan(0);
+      for (const s of e.stacks) expect(stacks.has(s), `${e.id}: ${s}`).toBe(true);
+      expect(e.tipos.length, e.id).toBeGreaterThan(0);
+      for (const t of e.tipos) expect(tipos.has(t), `${e.id}: ${t}`).toBe(true);
+      expect(e.url, e.id).toMatch(/^https:\/\//);
+      for (const f of e.fontes ?? []) expect(f.url, e.id).toMatch(/^https:\/\//);
+      expect(e.verificado, e.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      for (const c of e.instalacao ?? []) {
+        if (c.linguagem === 'json') expect(() => JSON.parse(c.conteudo), `${e.id}: ${c.titulo}`).not.toThrow();
+      }
+      for (const t of [e.descricao, ...(e.cuidados ?? [])]) {
+        expect(t, e.id).not.toMatch(/\b(DEVE|NÃO DEVE)\b/);
+        for (const href of linksMarkdown(t)) verificarLink(href, e.id);
+      }
+    }
+    for (const t of SEM_ITEM_OFICIAL) for (const href of linksMarkdown(t)) verificarLink(href, 'sem-item-oficial');
   });
 
   it('regras apontam para artigos existentes', () => {

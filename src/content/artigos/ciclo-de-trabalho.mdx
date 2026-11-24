@@ -64,7 +64,7 @@ Como fica o fluxo de sessão? Escreva um plano, incluindo como vamos testar.
 Planejar tem custo. Se você consegue descrever o diff em uma frase (corrigir um typo, renomear uma variável, adicionar um log), peça direto. O plano vale a pena quando a abordagem é incerta, quando a mudança toca vários arquivos ou quando você não conhece o código.
 :::
 
-Para funcionalidades grandes, peça que o agente **entreviste você** sobre requisitos, casos de borda e trade-offs, e escreva uma especificação (por exemplo `SPEC.md`). Depois, implemente numa **sessão nova**, com o contexto limpo e a especificação como referência.
+Para funcionalidades grandes, peça que o agente **entreviste você** sobre requisitos, casos de borda e trade-offs, e escreva uma especificação (por exemplo `SPEC.md`). Depois, implemente numa **sessão nova**, com o contexto limpo e a especificação como referência. Veja como escrever e manter uma boa especificação em [Especificações antes do código](/aprofundar/especificacoes).
 
 ## Implementar
 
@@ -88,6 +88,19 @@ Esta é a prática que mais muda a qualidade do resultado: **dê ao agente uma f
 | Causa raiz | "o build está falhando" | "o build falha com este erro: [erro]. Corrija e confirme que o build passa. Trate a causa, não suprima o erro" |
 
 Peça **evidência**: a saída dos testes, o comando executado e o resultado. Conferir evidência é mais rápido do que refazer a verificação, e funciona mesmo quando você não acompanhou a sessão.
+
+Um formato curto, para cada afirmação do agente:
+
+```text title="Evidência"
+Afirmação: a busca recusa nomes com menos de 2 caracteres
+Comando:   npm test -- busca
+Saída:     código 0, 4 testes passaram
+Resultado: passou
+```
+
+- **Proporcional ao que se afirma:** para uma afirmação pontual, basta o teste específico. Para "está pronto", rode a verificação completa do projeto (lint, testes e build).
+- **Evidência nova:** um teste que passou antes da última mudança não conta.
+- **Sem comando?** Uma verificação manual também vale, desde que declarada como tal: "conferi no navegador, sem teste automatizado". Só "funciona" não é evidência.
 
 :::tip[Revisão independente]
 Antes de considerar uma tarefa grande concluída, peça uma revisão do diff num **contexto novo**: um subagente, outra sessão ou outra ferramenta. Quem revisa não deve ser quem escreveu, porque o revisor sem o histórico não herda os vieses da implementação. Peça que ele aponte só problemas de correção e de requisitos, para não cair em engenharia excessiva.
