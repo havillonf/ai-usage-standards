@@ -125,7 +125,7 @@ export const EXEMPLOS: Exemplo[] = [
     descricao:
       'Skills oficiais do time do Angular: `angular-developer` (código idiomático, signals, formulários, roteamento, testes) e `angular-new-app` (criar uma aplicação com a CLI).',
     url: 'https://angular.dev/ai/agent-skills',
-    instalacao: [{titulo: 'Terminal', linguagem: 'bash', conteudo: 'npx skills add https://github.com/angular/skills\n'}],
+    instalacao: [{titulo: 'Terminal', linguagem: 'bash', conteudo: 'npx skills add https://github.com/angular/skills'}],
     verificado: VERIFICADO_EM,
   },
   {
@@ -189,7 +189,7 @@ export const EXEMPLOS: Exemplo[] = [
         linguagem: 'json',
         conteudo: '{\n  "mcpServers": {\n    "svelte": {\n      "command": "npx",\n      "args": ["-y", "@sveltejs/mcp"]\n    }\n  }\n}\n',
       },
-      {titulo: 'Remoto (endereço)', linguagem: 'text', conteudo: 'https://mcp.svelte.dev/mcp\n'},
+      {titulo: 'Remoto (endereço)', linguagem: 'text', conteudo: 'https://mcp.svelte.dev/mcp'},
     ],
     cuidados: [
       'Na versão remota, o código vai para um servidor da equipe do Svelte, que declara não registrar nem armazenar o que recebe. A versão local roda na sua máquina.',
@@ -320,7 +320,7 @@ export const EXEMPLOS: Exemplo[] = [
     organizacao: 'Microsoft',
     descricao: 'Busca e leitura da documentação oficial da Microsoft e dos seus exemplos de código.',
     url: 'https://learn.microsoft.com/training/support/mcp',
-    instalacao: [{titulo: 'Endereço (Streamable HTTP)', linguagem: 'text', conteudo: 'https://learn.microsoft.com/api/mcp\n'}],
+    instalacao: [{titulo: 'Endereço (Streamable HTTP)', linguagem: 'text', conteudo: 'https://learn.microsoft.com/api/mcp'}],
     cuidados: ['Serviço remoto e gratuito, sem autenticação, só com documentação pública.'],
     verificado: VERIFICADO_EM,
   },
@@ -438,7 +438,7 @@ export const EXEMPLOS: Exemplo[] = [
     descricao: 'Acesso a coleções, especificações OpenAPI, ambientes e workspaces do Postman.',
     url: 'https://github.com/postmanlabs/postman-mcp-server',
     instalacao: [
-      {titulo: 'Remoto (login por OAuth)', linguagem: 'text', conteudo: 'https://mcp.postman.com/minimal\n'},
+      {titulo: 'Remoto (login por OAuth)', linguagem: 'text', conteudo: 'https://mcp.postman.com/minimal'},
       {
         titulo: 'Local (chave na variável POSTMAN_API_KEY)',
         linguagem: 'bash',
