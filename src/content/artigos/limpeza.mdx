@@ -1,0 +1,167 @@
+---
+title: Limpeza depois do agente
+description: Como encontrar e remover processos, containers, arquivos e históricos que o agente deixa no sistema.
+---
+
+## O que costuma sobrar
+
+Um agente em CLI roda comandos na sua máquina, com as suas permissões. Nem tudo o que ele inicia ou cria termina junto com a sessão.
+
+| O que sobra | Exemplo | Como você percebe |
+|---|---|---|
+| Processos em segundo plano | Servidor de desenvolvimento, watcher de testes | "Port 5173 is in use", ventoinha ligada sem motivo |
+| Containers Docker | `docker run -d` ou `docker compose up -d` para testar algo | Containers que voltam a cada boot e ocupam portas |
+| Arquivos soltos no repositório | Scripts de teste, `debug.log`, cópias `*.bak` | Arquivos não rastreados no `git status` |
+| Estado do git | Branches, stashes e worktrees de tentativas | `git branch` com nomes que você não criou |
+| Instalações globais | `npm install -g`, `pip install --user` | Comandos novos no `PATH` |
+| Configurações fora do projeto | Linha nova no `~/.bashrc`, `git config --global`, crontab, serviço de usuário | Comportamento que muda em outros projetos |
+| Dados da própria ferramenta | Históricos de sessão, checkpoints, logs | Disco ocupado e [segredos](/aprofundar/segredos) gravados em texto puro |
+
+## Antes de começar
+
+Limpar é mais fácil quando você sabe como o sistema estava antes.
+
+- **Comece com o `git status` limpo.** Assim, tudo o que aparecer no fim veio da sessão.
+- **Use uma branch ou worktree por tarefa.** Uma tentativa descartada vira uma branch apagada.
+- **Prefira ambientes descartáveis** (devcontainer, sandbox da ferramenta) para tarefas que instalam pacotes ou sobem serviços.
+- **Não deixe o agente usar `sudo`** nem instalar nada fora do projeto sem pedir. Veja [Permissões](/aprofundar/permissoes).
+- **Combine o comportamento no `AGENTS.md`:**
+
+```markdown title="AGENTS.md"
+## Ao terminar uma tarefa
+- Pare os servidores e watchers que você iniciou.
+- Não instale pacotes globais nem altere arquivos fora do repositório sem pedir.
+- Liste os containers, processos e arquivos fora do repositório que você criou.
+```
+
+## No fim da sessão, peça um inventário
+
+```text title="Exemplo de pedido"
+Antes de encerrarmos: liste os processos em segundo plano, containers,
+arquivos temporários, branches e instalações que você criou nesta sessão,
+e diga o que ainda está rodando. Não apague nada, só liste.
+```
+
+O agente só lembra do que está no contexto. Depois de uma compactação, ou numa sessão nova, a lista pode vir incompleta. Por isso, confira com os comandos abaixo.
+
+## Conferir e limpar
+
+<Regra id="R4" />
+
+Limpar é destrutivo: `git clean -f`, `docker compose down -v` e `kill` não têm desfazer. Rode antes a versão que só lista, confira o alvo e só então apague. Se for o agente quem executa, aprove cada comando.
+
+Os comandos abaixo são para Linux. Onde o macOS é diferente, há uma alternativa.
+
+### Repositório
+
+```bash
+git status --short             # o que mudou e o que não é rastreado
+git clean -nd                  # lista o que seria apagado (não apaga nada)
+git clean -fd                  # apaga os arquivos e pastas não rastreados listados acima
+git stash list                 # stashes guardados
+git worktree list              # worktrees abertas
+git worktree remove <caminho>  # remove uma worktree que não serve mais
+git branch                     # branches locais
+git branch -d <nome>           # apaga uma branch (recusa se ela não foi mesclada)
+```
+
+:::warning[Cuidado com `git clean -x`]
+Com `-x`, o `git clean` apaga também os arquivos **ignorados**: `.env`, `node_modules`, builds, bancos locais. Não use `-x` sem antes rodar `git clean -ndx` e ler a lista. Mova ou faça commit do que quiser manter antes de limpar.
+:::
+
+### Processos e portas
+
+```bash
+ss -ltnp                          # portas abertas e o processo dono (Linux)
+lsof -nP -iTCP -sTCP:LISTEN       # o mesmo, no macOS
+ps -u "$USER" -o pid,etime,args   # seus processos, com o tempo de execução
+kill <PID>                        # pede para o processo terminar
+```
+
+Se a porta aparece **sem o nome do processo**, ele pertence a outro usuário, como o root. Rode de novo com `sudo`, por exemplo `sudo ss -ltnp 'sport = :5173'`. Se o dono for o `docker-proxy`, a porta é de um container.
+
+### Docker
+
+```bash
+docker ps -a                                      # todos os containers, inclusive os parados
+docker compose down                               # na pasta do projeto: para e remove os containers do compose
+docker stop <container> && docker rm <container>  # para e remove um container avulso
+docker inspect -f '{{.HostConfig.RestartPolicy.Name}}' <container>  # política de reinício
+docker update --restart=no <container>            # o container não volta mais sozinho
+docker system df                                  # espaço usado por imagens, containers e volumes
+```
+
+Containers com política de reinício `always` ou `unless-stopped` voltam quando o Docker reinicia, inclusive no boot. Containers iniciados com `-d` pertencem ao serviço do Docker, não à sessão do agente: continuam rodando depois que você fecha a ferramenta.
+
+:::warning[O que apaga dados]
+- `docker compose down -v` remove também os **volumes**, com os dados de banco que estiverem neles.
+- `docker container prune` e `docker system prune` removem **tudo** o que estiver parado, não só o que o agente criou.
+:::
+
+### Fora do repositório
+
+```bash
+find ~ -maxdepth 2 -type f -mmin -120 -not -path '*/.cache/*'  # arquivos da home alterados nas últimas 2 horas
+git config --global --list                                     # configuração global do git
+crontab -l                                                     # tarefas agendadas
+systemctl --user list-units --type=service --state=running     # serviços do usuário (Linux com systemd)
+npm ls -g --depth=0                                            # pacotes npm globais
+pip list --user                                                # pacotes Python instalados para o usuário
+```
+
+Troque `120` pela duração da sessão, em minutos. A lista do `find` inclui os arquivos da própria ferramenta, o que é esperado.
+
+## Dados da própria ferramenta
+
+Os históricos de sessão ficam no seu disco e guardam o que o agente leu e escreveu, inclusive segredos que tenham aparecido na conversa. Apagar o histórico local **não** desfaz o que já foi enviado ao provedor: se uma credencial apareceu numa sessão, troque a credencial ([Segredos](/aprofundar/segredos)).
+
+Os **checkpoints** e o "desfazer" das ferramentas cobrem as edições de arquivo feitas pelo agente. Nenhuma das documentações consultadas diz que eles desfazem processos, containers ou mudanças fora do projeto.
+
+<NaPratica>
+<TabItem value="opencode">
+
+- **Onde ficam os dados:** em `~/.local/share/opencode/`. As sessões ficam no banco `opencode.db` e os logs na pasta `log/`. `opencode debug paths` mostra todos os caminhos da sua instalação.
+- **Arquivos de depuração:** heap snapshots e perfis de CPU, se você os gerou, ficam na pasta de logs.
+- **Desfazer:** `/undo` reverte a última mensagem e o trabalho que veio depois; `/redo` restaura. Se o `/undo` reverte o que comandos de shell mudaram: a verificar.
+- **Apagar uma sessão:** a documentação consultada não mostra um comando para isso (a verificar).
+- **Desinstalar:** `opencode uninstall` não remove os dados de sessão, a configuração nem o estado.
+
+</TabItem>
+<TabItem value="cline">
+
+- **Checkpoints:** ficam num repositório git separado (*shadow*), que não mexe no git do projeto. Capturam inclusive arquivos não rastreados e, em repositórios grandes, podem ocupar bastante espaço. Para desligar: engrenagem, **Feature Settings**, **Enable Checkpoints**. Onde ficam e como apagá-los: a verificar.
+- **Dados do CLI:** em `~/.cline/data/`: sessões em `sessions/`, índice em `db/sessions.db` e log em `logs/cline.log`. As worktrees do `--worktree` ficam em `~/.cline/worktrees/`.
+- **Apagar uma sessão (CLI):** `cline history` abre o seletor e `cline history delete --session-id <id>` apaga uma sessão.
+- **Processos do Cline:** `cline hub stop` para o hub e as sessões que rodam nele, e `cline doctor fix` encerra todos os processos do Cline. Se os processos iniciados pelos comandos do agente terminam junto: a verificar.
+- **Histórico na extensão:** onde fica e como apagar: a verificar.
+
+</TabItem>
+<TabItem value="claude-code">
+
+- **Processos em segundo plano:** `Ctrl+B` manda um comando para o segundo plano e `/tasks` lista os shells e subagentes em execução, onde você pode pará-los. Ao sair, o Claude Code encerra as tarefas em segundo plano. No Linux e no macOS, isso inclui os processos que se desligaram do shell, como os iniciados com `setsid` ou `timeout`.
+- **Sessões:** ficam em texto puro em `~/.claude/projects/` e são apagadas depois de `cleanupPeriodDays` (padrão: 30 dias; mínimo: 1). O `~/.claude/history.jsonl` fica até você apagar.
+- **Apagar o estado de um projeto:** `claude purge <caminho>` pede confirmação, e `--dry-run` mostra o que seria apagado. Não apague `~/.claude.json`, `~/.claude/settings.json` nem `~/.claude/plugins/`.
+- **Worktrees:** ficam em `.claude/worktrees/<nome>/`. Adicione essa pasta ao `.gitignore`. Ao sair, uma worktree sem mudanças é removida com a branch (numa sessão com nome, ele pergunta antes); uma com mudanças gera a pergunta se quer manter. Execuções com `-p` não limpam as worktrees.
+- **Checkpoints:** desfazem só as edições das ferramentas de edição de arquivo. Um arquivo que só um comando de shell mudou fica como está.
+
+</TabItem>
+<TabItem value="antigravity">
+
+- **Comandos em segundo plano:** no CLI, `/tasks` abre o Task Manager com os logs dos shells em segundo plano. No app, o painel Overview tem a seção **Background Tasks**. Como parar um processo por ali: a verificar.
+- **Sandbox de terminal:** isola os comandos do agente. Os comandos que rodam fora do sandbox rodam no seu sistema com todos os privilégios.
+- **Conversas no CLI:** em `/resume`, selecione a conversa, aperte `F4` e confirme para apagar. Onde o app guarda as conversas e como apagá-las: a verificar.
+- **Descartar mudanças:** no painel Review, **Discard unstaged changes** age na hora, sem confirmação, e também apaga do disco os arquivos não rastreados.
+- **`/rewind` (ou `/undo`):** volta o histórico da conversa. Se reverte arquivos: a verificar.
+- **Navegador embutido:** usa um perfil de cookies separado e persistente. O histórico é apagado em **Settings**, **Browser**, **Browsing History**, e os cookies, site a site, pelo ícone de segurança da barra de endereço.
+
+</TabItem>
+</NaPratica>
+
+## Fontes
+
+- OpenCode — [Troubleshooting](https://opencode.ai/docs/troubleshooting/), [CLI](https://opencode.ai/docs/cli/) e [TUI](https://opencode.ai/docs/tui/).
+- Cline — [Checkpoints](https://docs.cline.bot/core-workflows/checkpoints), [CLI reference](https://docs.cline.bot/cli/cli-reference) e [Config](https://docs.cline.bot/getting-started/config).
+- Anthropic — [Interactive mode](https://code.claude.com/docs/en/interactive-mode): *Background bash commands*; [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory); [Data usage](https://code.claude.com/docs/en/data-usage); [Worktrees](https://code.claude.com/docs/en/worktrees); [Checkpointing](https://code.claude.com/docs/en/checkpointing).
+- Antigravity — [CLI reference](https://antigravity.google/docs/cli/reference), [Resume](https://antigravity.google/docs/cli/commands/resume), [Sandbox](https://antigravity.google/docs/sandbox), [Review changes](https://antigravity.google/docs/review-changes) e [Browser](https://antigravity.google/docs/browser).
+- Git — [git-clean](https://git-scm.com/docs/git-clean) e [git-worktree](https://git-scm.com/docs/git-worktree).
+- Docker — [Start containers automatically](https://docs.docker.com/engine/containers/start-containers-automatically/) e [docker compose down](https://docs.docker.com/reference/cli/docker/compose/down/).
