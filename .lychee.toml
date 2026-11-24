@@ -8,4 +8,8 @@ exclude = [
   "^https://opencode\\.ai/config\\.json$",
   "^https://mcp\\.exemplo\\.com",
   "^https://exemplo",
+  # Endereços de servidores MCP: são endpoints, não páginas (respondem 401/405 a um GET).
+  "^https://mcp\\.",
+  "^https://nuxt\\.com/mcp$",
+  "^https://learn\\.microsoft\\.com/api/mcp$",
 ]

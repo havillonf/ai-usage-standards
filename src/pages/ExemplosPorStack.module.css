@@ -1,0 +1,85 @@
+.grupoFiltro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.rotuloGrupo {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--cor-borda);
+  border-top: 3px solid var(--cor-primaria-forte);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-elevada);
+}
+
+.cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.nome {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.organizacao {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.etiqueta {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-forte);
+}
+
+.stacksDoItem {
+  font-size: 0.82rem;
+  color: var(--cor-texto-suave);
+}
+
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--cor-texto-suave);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: auto 0 0;
+  font-size: 0.88rem;
+}

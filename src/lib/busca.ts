@@ -56,6 +56,15 @@ function documentos(): Documento[] {
       para: '/ferramentas/agents-md',
     },
     {
+      id: 'pagina/exemplos-por-stack',
+      titulo: 'Exemplos por stack',
+      tipo: 'Ferramenta',
+      contexto: 'Skills, servidores MCP e guias oficiais por stack',
+      texto:
+        'exemplos stack skill mcp oficial react next angular vue nuxt svelte node nestjs fastapi django flask spring dotnet laravel playwright cypress selenium pytest junit jest vitest postman sonarqube jupyter pandas',
+      para: '/ferramentas/exemplos-por-stack',
+    },
+    {
       id: 'pagina/gerador-permissoes',
       titulo: 'Gerador de permissões',
       tipo: 'Ferramenta',

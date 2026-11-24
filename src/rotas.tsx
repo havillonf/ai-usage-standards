@@ -7,6 +7,7 @@ import {ROTEIROS} from '@/content/roteiros';
 import type {Roteiro} from '@/content/tipos';
 import {Aprofundar, PaginaArtigo} from '@/pages/Aprofundar';
 import {Estender, EstenderNaoSei} from '@/pages/Estender';
+import ExemplosPorStack from '@/pages/ExemplosPorStack';
 import {FerramentaAgentsMd, FerramentaPermissoes, Ferramentas} from '@/pages/Ferramentas';
 import Inicio from '@/pages/Inicio';
 import NaoEncontrado from '@/pages/NaoEncontrado';
@@ -35,6 +36,7 @@ export const ROTAS: RouteObject[] = [
       {path: 'ferramentas', element: <Ferramentas />},
       {path: 'ferramentas/agents-md', element: <FerramentaAgentsMd />},
       {path: 'ferramentas/permissoes', element: <FerramentaPermissoes />},
+      {path: 'ferramentas/exemplos-por-stack', element: <ExemplosPorStack />},
       {path: 'regras', element: <Regras />},
       {path: 'aprofundar', element: <Aprofundar />},
       {path: 'aprofundar/:slug', element: <PaginaArtigo />},

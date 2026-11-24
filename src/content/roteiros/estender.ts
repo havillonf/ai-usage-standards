@@ -194,6 +194,7 @@ export const estenderSkill: Roteiro = {
           tipo: 'lista',
           titulo: 'Onde procurar',
           itens: [
+            '[Exemplos por stack](/ferramentas/exemplos-por-stack?tipo=skill): skills oficiais de React, Angular, Svelte, FastAPI, .NET, Laravel, Playwright, Cypress e outras.',
             '[Repositório de skills da Anthropic](https://github.com/anthropics/skills): exemplos de referência do padrão.',
             'Repositórios oficiais das ferramentas e bibliotecas que você usa.',
             'Skills que colegas do laboratório já usam. Um catálogo curado do ATLab está previsto.',
@@ -389,6 +390,7 @@ export const estenderMcp: Roteiro = {
           titulo: 'Onde procurar',
           itens: [
             'Documentação do próprio serviço: muitos já oferecem um servidor MCP oficial.',
+            '[Exemplos por stack](/ferramentas/exemplos-por-stack?tipo=mcp): servidores oficiais das stacks mais usadas, com as opções de somente leitura.',
             '[Registro oficial do MCP](https://registry.modelcontextprotocol.io/).',
             'Servidores de referência em [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers).',
           ],

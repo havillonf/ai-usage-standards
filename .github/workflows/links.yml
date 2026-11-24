@@ -21,8 +21,12 @@ jobs:
       - uses: actions/checkout@v7
       - uses: lycheeverse/lychee-action@v2
         with:
+          # --root-dir transforma links internos (/regras, /aprofundar/…) em caminhos
+          # de arquivo, que o filtro `scheme = ["https"]` ignora. Eles são
+          # verificados pelos testes.
           args: >-
             --config .lychee.toml
+            --root-dir ${{ github.workspace }}
             'src/content/**/*.mdx'
             'src/content/**/*.ts'
             'src/data/*.ts'

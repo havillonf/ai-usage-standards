@@ -1,0 +1,160 @@
+---
+title: Especificações antes do código
+description: Quando vale escrever uma especificação para o agente, como escrevê-la bem e como mantê-la atualizada.
+---
+
+Para uma mudança pequena, um pedido direto basta. Para uma funcionalidade que vai durar várias sessões, tocar vários arquivos ou passar por várias pessoas, o agente precisa de algo que o pedido não carrega: **as decisões que você já tomou**. Uma especificação (*spec*) registra essas decisões num arquivo do repositório, e o agente constrói a partir dele. A abordagem é chamada de *spec-driven development* (SDD).
+
+O motivo é simples: o agente começa cada sessão sem memória ([Memória persistente](/aprofundar/memoria)). O que não está escrito, ele preenche com o padrão mais comum que conhece, que pode não ser o do seu projeto. E preenche de um jeito diferente a cada vez.
+
+## Spec não é prompt
+
+| | Pedido (prompt) | Especificação |
+|---|---|---|
+| **Vale por** | Um turno da conversa | Enquanto a funcionalidade existir |
+| **Diz** | O que fazer agora | Como o sistema se comporta, o que fica de fora e como verificar |
+| **Fica** | No histórico da sessão | No repositório, versionada com o código |
+
+O termo "spec" também é usado para "um prompt bem detalhado". Aqui, spec é o arquivo que sobrevive à sessão.
+
+## Quando vale a pena
+
+Escreva uma spec quando:
+
+- o trabalho vai durar mais de uma sessão;
+- várias pessoas ou agentes vão mexer no mesmo código;
+- errar custa caro: dados de pesquisa, segurança, dados pessoais, dinheiro;
+- alguém vai precisar saber, meses depois, por que o código é assim.
+
+Pule a spec quando o trabalho é um script descartável, um protótipo para entender o problema ou uma mudança que cabe numa frase. Nesses casos, o [ciclo de trabalho](/aprofundar/ciclo-de-trabalho) com um plano curto basta.
+
+:::warning[A spec tem o tamanho do risco]
+Spec demais também atrapalha. Ao testar ferramentas de SDD, Birgitta Böckeler (Thoughtworks) relata que um bug pequeno virou várias *user stories* com dezenas de critérios de aceitação, e que revisar tanto Markdown cansava mais do que revisar o código. Para uma tarefa pequena, meia página resolve.
+:::
+
+## Níveis de rigor
+
+Böckeler descreve três níveis, do mais leve ao mais ambicioso:
+
+| Nível | A spec… | Quando usar |
+|---|---|---|
+| **Spec-first** | é escrita antes e guia a implementação daquela tarefa | A maioria dos casos: funcionalidades novas, protótipos que vão virar produto |
+| **Spec-anchored** | continua no repositório depois da entrega e é mantida junto com o código | Código que vai durar e ter vários mantenedores |
+| **Spec-as-source** | é o único arquivo editado por pessoas; o código é sempre gerado a partir dela | Experimental: ainda não é uma prática madura |
+
+## Como escrever uma boa spec
+
+### O teste do leitor sem contexto
+
+Imagine alguém competente, que não participou de nenhuma das suas conversas. Essa pessoa conseguiria construir a coisa certa só com o documento? Se ela teria que adivinhar alguma coisa, o agente também vai adivinhar. O agente e um colega novo têm a mesma limitação: nenhum dos dois estava na sua cabeça.
+
+### Números em vez de adjetivos
+
+Adjetivos deixam o agente inventar a própria definição.
+
+| Vago | Verificável |
+|---|---|
+| "A busca deve ser rápida." | "A busca responde em até 500 ms com 10 mil reservas cadastradas." |
+| "Trate erros da API." | "Se a API de salas não responder em 5 s, tente de novo até 3 vezes e registre a falha no log." |
+| "Valide o nome da sala." | Uma tabela de entradas e saídas (abaixo). |
+
+### Diga o que fica de fora
+
+Liste o que você **não** vai construir. É a melhor defesa contra o agente "prestativo", que estende o modelo de dados para algo que ninguém pediu. Quando um item puder parecer esquecimento, escreva a razão numa linha:
+
+```markdown title="SPEC.md (trecho)"
+## Fora do escopo
+- Reservas recorrentes: ficam para a v2.
+- Integração com calendários externos.
+- Aprovação por e-mail: a coordenação aprova pelo próprio sistema.
+```
+
+### Exemplos de entrada e saída
+
+Regras de validação em prosa quase sempre ficam incompletas. Uma tabela fecha a interpretação:
+
+| Entrada | Resultado esperado |
+|---|---|
+| `""` (vazio) | Erro: "Nome é obrigatório" |
+| `"   "` (só espaços) | Erro: "Nome é obrigatório" (remove os espaços antes de validar) |
+| `"A"` | Erro: "Mínimo de 2 caracteres" |
+| `"Lab 3"` | Sucesso |
+| 81 caracteres | Erro: "Máximo de 80 caracteres" |
+
+A linha dos espaços é a que costuma faltar: nada em "valide o nome" diz que os espaços saem antes da validação.
+
+### Requisitos com gatilho e condição explícitos
+
+O formato **EARS** (*Easy Approach to Requirements Syntax*), criado por Alistair Mavin e colegas na Rolls-Royce e publicado em 2009, organiza cada requisito em uma de poucas formas de frase. Cada forma deixa explícito **quando** a regra vale, o que elimina boa parte da ambiguidade:
+
+| Padrão | Forma | Exemplo |
+|---|---|---|
+| Sempre válido | O sistema deve … | O sistema deve registrar quem criou cada reserva. |
+| Evento | Quando …, o sistema deve … | Quando uma reserva for cancelada, o sistema deve avisar os participantes. |
+| Estado | Enquanto …, o sistema deve … | Enquanto a sala estiver em manutenção, o sistema deve recusar reservas para ela. |
+| Comportamento indesejado | Se …, então o sistema deve … | Se duas reservas se sobrepuserem, então o sistema deve recusar a segunda e mostrar o conflito. |
+| Opcional | Onde …, o sistema deve … | Onde houver login institucional, o sistema deve preencher o nome do usuário. |
+| Complexo | Enquanto …, quando …, o sistema deve … | Enquanto a sala estiver reservada, quando alguém tentar reservá-la, o sistema deve sugerir outro horário. |
+
+No original em inglês, as palavras-chave são *When*, *While*, *If/Then*, *Where* e *shall*. Use o mesmo verbo firme em todos os requisitos: "o sistema deveria" dá ao agente uma saída.
+
+### Registre as perguntas em aberto
+
+Antes de entregar a spec, pergunte-se: **o que o agente vai ter que adivinhar?** Os casos de que ele mais precisa são os que fogem do caminho feliz:
+
+- excluir algo que tem dependentes (excluir em cascata? bloquear?);
+- estados conflitantes e edições simultâneas;
+- quem vê e quem altera o quê;
+- fuso horário e formato de datas;
+- usuário removido com itens em aberto.
+
+Responda cada um na spec, numa seção de perguntas e respostas. Se ainda não sabe a resposta, deixe a pergunta **marcada como aberta**: o agente vê a pergunta e pede a decisão, em vez de inventar. Resolva as perguntas abertas antes de implementar.
+
+### Diga como verificar
+
+Cada requisito precisa de um teste ou comando que diga se ele foi atendido. Termine a spec com uma verificação de ponta a ponta, que mostre que a funcionalidade inteira funciona. Veja [Verificar](/aprofundar/ciclo-de-trabalho#verificar).
+
+## Da ideia à spec, com o agente
+
+1. **Peça uma entrevista**, no modo de planejamento da ferramenta ([como ativar](/aprofundar/ciclo-de-trabalho#explorar)):
+
+   ```text title="Pedido"
+   Quero construir <descrição curta>. Antes de qualquer código, me entreviste sobre
+   o comportamento esperado, os casos de borda, o que fica fora do escopo e como
+   vamos verificar. Faça uma pergunta por vez, com opções quando fizer sentido.
+   Quando as respostas fecharem, escreva a especificação em SPEC.md: requisitos
+   verificáveis, uma seção "Fora do escopo", as perguntas em aberto e um plano
+   de verificação. Não implemente nada.
+   ```
+
+2. **Revise a spec você mesmo.** É o momento mais barato para mudar de ideia. Em equipe, abra a spec num PR **antes** do código: discordar num comentário custa menos que reescrever uma funcionalidade pronta.
+3. **Para funcionalidades maiores, peça o desenho e as tarefas:** arquivos, dados e interfaces envolvidos, e uma lista de tarefas pequenas, cada uma com o comando que a verifica.
+4. **Implemente numa sessão nova**, com a spec como referência, uma tarefa por vez. Diga ao agente: se encontrar uma ambiguidade, pare e pergunte. A resposta entra na spec antes de o código continuar.
+5. **Verifique contra a spec**, de preferência com uma revisão em contexto novo, que aponte só o que falta em relação à spec.
+
+## Mantenha a spec viva
+
+Quando o resultado sai errado, pergunte primeiro: **a spec estava errada ou incompleta?** Se estava, corrija a spec e depois o código. Corrigir só o código deixa a lacuna na spec, e o mesmo erro volta na próxima vez que o agente mexer naquela parte. Com o tempo, a spec vira documentação que mente (*spec drift*).
+
+- Versione a spec junto com o código que ela descreve.
+- Mudou um requisito? A mudança passa por revisão, como qualquer código.
+- Spec que ninguém lê nem atualiza é só uma pasta de arquivos: apague ou atualize.
+
+## Ferramentas
+
+Arquivos Markdown no repositório bastam. Ferramentas de SDD automatizam a criação dos documentos e as etapas do fluxo:
+
+- **[GitHub Spec Kit](https://github.com/github/spec-kit)** (MIT): a CLI `specify` prepara o projeto, e comandos no agente conduzem as etapas, dos princípios do projeto até a implementação.
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** (MIT): cada mudança fica numa pasta própria, com proposta, specs, desenho e tarefas. Ao arquivar a mudança, as specs do projeto absorvem o que entrou. O fluxo é propositalmente flexível, sem etapas obrigatórias.
+
+Escolha a opção mais leve que resolve o seu problema. Essas ferramentas instalam skills e comandos de terceiros, que passam pela auditoria antes do uso:
+
+<Regra id="R5" />
+
+## Fontes
+
+- Birgitta Böckeler — [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) (martinfowler.com, out. 2025): níveis de rigor e críticas às ferramentas.
+- Alistair Mavin — [EARS: The Easy Approach to Requirements Syntax](https://alistairmavin.com/ears/): os padrões de frase e a origem do formato.
+- Anthropic — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices): *Brainstorm with Claude first* (entrevista que gera um `SPEC.md` e implementação numa sessão nova).
+- [GitHub Spec Kit](https://github.com/github/spec-kit) e [OpenSpec](https://github.com/Fission-AI/OpenSpec): documentação das ferramentas.
+- Felipe Fontoura — [Spec-Driven Development: software em produção com agentes de IA](https://felipefontoura.com/pt/get/sdd-book/feicjm/) (2026, CC BY-NC-SA 4.0). Leitura complementar, com specs completas de um projeto de exemplo.

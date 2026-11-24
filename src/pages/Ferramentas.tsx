@@ -96,6 +96,14 @@ export function Ferramentas(): ReactNode {
         </button>
       )}
 
+      <h2>Exemplos por stack</h2>
+      <div className={styles.atalhos}>
+        <Link to="/ferramentas/exemplos-por-stack" className={styles.atalho}>
+          <strong>Exemplos por stack</strong>
+          <span>Skills, servidores MCP e guias oficiais para React, Angular, FastAPI, .NET, Playwright e outras.</span>
+        </Link>
+      </div>
+
       <h2>Geradores</h2>
       <div className={styles.atalhos}>
         <Link to="/ferramentas/agents-md" className={styles.atalho}>
